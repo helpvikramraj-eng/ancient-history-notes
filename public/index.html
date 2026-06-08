@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian History - Study Notes</title>
+    <style>
+        body { font-family: 'Georgia', serif; background: #fdfdfd; color: #222; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 600px; line-height: 1.8; font-size: 17px; margin-top: 4px; }
+        h1 { font-family: 'Helvetica', sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .secret-trigger { cursor: text; color: inherit; font-weight: normal; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; }
+        #chat-area { display: none; background: #1e1e1e; color: #e0e0e0; padding: 20px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: none; box-sizing: border-box; font-size: 16px; }
+        input { background: #2d2d2d; color: white; }
+        button { background: #0084ff; color: white; cursor: pointer; font-weight: bold; }
+        .btn-danger { background: #d63031; }
+        #messages { height: 300px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #151515; border-radius: 6px; }
+        .msg { padding: 10px 14px; margin: 6px 0; border-radius: 8px; max-width: 75%; word-wrap: break-word; }
+        .my-msg { background: #0084ff; align-self: flex-end; color: white; }
+        .their-msg { background: #2d2d2d; align-self: flex-start; color: white; }
+        .time { font-size: 10px; color: #aaa; display: block; margin-top: 4px; }
+        .chat-img { max-width: 100%; border-radius: 6px; margin-top: 5px; filter: blur(15px); transition: filter 0.3s; cursor: pointer; }
+        .chat-img.clear { filter: blur(0px); }
+    </style>
+</head>
+<body>
+    <div id="study-page" class="container">
+        <h1>Chapter 4: Ancient Trade Routes</h1>
+        <p>The economic history of the Indian subcontinent is deeply intertwined with its ancient commercial networks. During the early centuries, the region established profound connections with the Roman Empire, Southeast Asia, and Central Asian kingdoms. Silk, spices, textiles, and precious metals were frequently exchanged through well-documented land and maritime paths.</p>
+        <p>Historians argue that the stability of these trade routes depended largely on regional <span class="secret-trigger" onclick="showPasswordBox()">administrative</span> policies. For instance, the reforms introduced during the Gupta period greatly incentivized local merchants. Security outposts were built at regular intervals along the national highways to protect caravans from local raiders.</p>
+    </div>
+
+    <div id="password-modal" class="modal">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:#333;">Confirm Access Credentials</h3>
+            <input type="password" id="pass-input" style="background:#f0f0f0; color:#333; border:1px solid #ccc;" placeholder="Enter Security Key...">
+            <button onclick="login()">Verify</button>
+            <button class="btn-danger" style="background:#aaa;" onclick="hidePasswordBox()">Cancel</button>
+            <p id="err" style="color: red; font-size:14px;"></p>
+        </div>
+    </div>
+
+    <div id="chat-area">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 id="welcome-user" style="margin:0;">Secret Box</h3>
+            <button class="btn-danger" style="width: auto; padding: 5px 10px; margin: 0;" onclick="clearChat()">Burn All</button>
+        </div>
+        <div id="messages"></div>
+        <input type="text" id="msg-input" placeholder="Write a note...">
+        <input type="text" id="img-input" placeholder="Paste Image URL here (Optional)..." style="font-size: 13px;">
+        <button onclick="sendMessage()">Leave Message / Photo</button>
+    </div>
+
+    <script>
+        let secretCode = ""; let myRole = ""; 
+        function showPasswordBox() { document.getElementById('password-modal').style.display = 'flex'; }
+        function hidePasswordBox() {
+            document.getElementById('password-modal').style.display = 'none';
+            document.getElementById('pass-input').value = ""; document.getElementById('err').innerText = "";
+        }
+        async function apiRequest(url, data) {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: secretCode, ...data })
+            });
+            if(res.status === 401) throw new Error("Unauthorized");
+            return res.json();
+        }
+        async function login() {
+            const pin = document.getElementById('pass-input').value; secretCode = pin;
+            try {
+                const res = await apiRequest('/api/login', {});
+                if(res.success) {
+                    myRole = res.role; hidePasswordBox();
+                    document.getElementById('study-page').style.display = 'none';
+                    document.getElementById('chat-area').style.display = 'block';
+                    document.getElementById('welcome-user').innerText = `Hello, ${myRole === 'Boyfriend' ? 'Vikram' : 'Her'}`;
+                    window.history.replaceState(null, "Notes", "/secure-dashboard");
+                    loadMessages();
+                }
+            } catch(e) { document.getElementById('err').innerText = "Invalid Key!"; }
+        }
+        async function loadMessages() {
+            try {
+                const msgs = await apiRequest('/api/get-messages', {});
+                const container = document.getElementById('messages'); container.innerHTML = "";
+                msgs.forEach(m => {
+                    let div = document.createElement('div');
+                    div.className = m.sender === myRole ? "msg my-msg" : "msg their-msg";
+                    let content = m.text;
+                    if(m.text.startsWith('http://') || m.text.startsWith('https://')) {
+                        content = `<img src="${m.text}" class="chat-img" onclick="toggleBlur(this)" alt="Secret Photo"/><br/><small style="font-size:10px;color:#eee;">(Tap to view/blur)</small>`;
+                    }
+                    let senderName = m.sender === 'Boyfriend' ? 'Vikram' : 'Her';
+                    div.innerHTML = `${content} <span class="time">${m.timestamp} (${senderName})</span>`;
+                    container.appendChild(div);
+                });
+                container.scrollTop = container.scrollHeight;
+            } catch(e) { console.log(e); }
+        }
+        async function sendMessage() {
+            const textInput = document.getElementById('msg-input'); const imgInput = document.getElementById('img-input');
+            let finalPayload = textInput.value.trim();
+            if(imgInput.value.trim() !== "") { finalPayload = imgInput.value.trim(); }
+            if(!finalPayload) return;
+            await apiRequest('/api/send-message', { text: finalPayload });
+            textInput.value = ""; imgInput.value = ""; loadMessages();
+        }
+        function toggleBlur(imgElement) { imgElement.classList.toggle('clear'); }
+        async function clearChat() {
+            if(confirm("Saare messages hamesha ke liye delete karein?")) {
+                await apiRequest('/api/clear-chat', {}); loadMessages();
+            }
+        }
+        document.addEventListener("visibilitychange", function() { if (document.hidden) { autoLock(); } });
+        window.addEventListener("blur", function() { autoLock(); });
+        function autoLock() {
+            secretCode = ""; myRole = "";
+            document.getElementById('chat-area').style.display = 'none'; window.location.reload(); 
+        }
+    </script>
+</body>
+</html>
