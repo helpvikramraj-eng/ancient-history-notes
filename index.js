@@ -39,7 +39,7 @@
 
     <div id="chapter-4" class="container">
         <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग और अर्थव्यवस्था</h1>
-        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र था। भौगोलिक दृष्टि से भारत की स्थिति ऐसी थी कि यह पूर्व और पश्चिम के बीच एक प्राकृतिक व्यापारिक सेतु का कार्य करता था। उत्तर में रेशम मार्ग और दक्षिण में हिंद महासागर के समुद्री रास्तों के माध्यम से भारतीय व्यापारी सुदूर रोमन साम्राज्य, मध्य एशिया और चीन तक अपनी मजबूत पैठ बना चुके थे। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले और आयुर्वेदिक औषधियों का निर्यात किया जाता था।</p>
+        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र था। भौगोलिक दृष्टि से भारत की स्थिति ऐसी थी कि यह पूर्व और पश्चिम के बीच एक प्राकृतिक व्यापारिक सेतु का कार्य करता था। उत्तर में रेशम मार्ग और दक्षिण में हिंद महासागर के समुद्री रास्तों के माध्यम से भारतीय व्यापारी सुदूर रोमन साम्राज्य, मध्य एशियाและ चीन तक अपनी मजबूत पैठ बना चुके थे। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले और आयुर्वेदिक औषधियों का निर्यात किया जाता था।</p>
         <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Trade Routes">
         <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी नेटवर्क।</span>
         <h2>क्षेत्रीय नीतियां और सुरक्षा व्यवस्था</h2>
@@ -101,16 +101,15 @@
             document.getElementById(chapters[randomIndex]).style.display = 'block';
         });
 
-        // FIXED SUPABASE CONNECTION SETTINGS
         const SB_URL = "https://lqviqhaylepcwmhzkrkl.supabase.co";
-        // Complete and exact key with accurate termination
+        // YOUR EXACT FRESHA ANON KEY APPLIED BELOW
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdmlxaGF5bGVwY3dtaHprcmtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc2OTUsImV4cCI6MjA5NjQ0MzY5NX0.Cubykcy4K6pp8CUbRkqybZrjj1VAz8sr8wBlVFacQns";
         
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
         let myRole = "", broadcastChannel = null, dbSubscription = null, typingTimeout = null;
 
         function showPasswordBox() { isPopupOpen = true; document.getElementById('password-modal').style.display = 'flex'; }
-        function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.display = 'none'; }
+        function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.none = 'none'; document.getElementById('password-modal').style.display = 'none'; }
         
         async function login() {
             const pin = document.getElementById('pass-input').value;
