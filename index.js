@@ -101,8 +101,11 @@
             document.getElementById(chapters[randomIndex]).style.display = 'block';
         });
 
+        // FIXED SUPABASE CONNECTION SETTINGS
         const SB_URL = "https://lqviqhaylepcwmhzkrkl.supabase.co";
+        // Complete and exact key with accurate termination
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdmlxaGF5bGVwY3dtaHprcmtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc2OTUsImV4cCI6MjA5NjQ0MzY5NX0.Cubykcy4K6pp8CUbRkqybZrjj1VAz8sr8wBlVFacQns";
+        
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
         let myRole = "", broadcastChannel = null, dbSubscription = null, typingTimeout = null;
 
@@ -149,7 +152,6 @@
                 .channel('db-messages-sync')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
                     const newMsg = payload.new;
-                    // Only append if it's from the other person (to avoid double display)
                     if (newMsg.sender !== myRole && !displayedMessageIds.has(newMsg.id)) {
                         displayedMessageIds.add(newMsg.id);
                         const isImg = newMsg.text && newMsg.text.startsWith('data:image');
@@ -177,34 +179,26 @@
             container.appendChild(div); container.scrollTop = container.scrollHeight;
         }
 
-        // FIXED: Instantly show message locally on click!
         async function sendMessage() {
             const input = document.getElementById('msg-input');
             const text = input.value.trim(); if (!text) return;
             
             input.value = ""; 
             sendTypingStatus(false);
-            
-            // 1. Screen par turant khud ka message dikhao (Instant Echo)
             appendMessage(myRole, text, false);
             
-            // 2. Piche se chupchap database me insert karo
             try {
                 await supabaseClient.from('messages').insert([{ sender: myRole, text: text }]);
             } catch(e) { console.log("DB Insert Error: ", e); }
         }
 
-        // FIXED: Instantly show image locally on upload!
         async function handleImageUpload(inputElement) {
             const file = inputElement.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64Str = e.target.result;
-                
-                // 1. Screen par image turant dikhao
                 appendMessage(myRole, base64Str, true);
                 
-                // 2. Piche se database me push karo
                 try {
                     await supabaseClient.from('messages').insert([{ sender: myRole, text: base64Str }]);
                 } catch(err) { console.log("DB Image Error: ", err); }
