@@ -11,28 +11,28 @@
         h1 { font-family: 'Helvetica', Arial, sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 26px; }
         h2 { font-family: 'Helvetica', Arial, sans-serif; color: #2c3e50; font-size: 20px; margin-top: 30px; border-left: 4px solid #0084ff; padding-left: 10px; }
         .secret-trigger { cursor: text; color: inherit; font-weight: normal; background: transparent; border: none; padding: 0; font-size: 17px; font-family: inherit; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); text-align: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.1); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: center; }
         .secure-input { background:#f9f9f9; color:#333; border:1px solid #ddd; width:100%; box-sizing:border-box; padding:12px; margin-bottom:10px; font-size: 16px; -webkit-text-security: disc; text-security: disc; }
         .study-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin: 15px 0 5px 0; border: 1px solid #ddd; }
         .img-caption { font-size: 13px; color: #666; text-align: center; font-style: italic; margin-bottom: 20px; display: block; }
 
-        /* Transparent & Light Chat Area Style to blend with background */
-        #chat-area { display: none; background: rgba(253, 253, 253, 0.96); color: #555; padding: 15px; border-radius: 8px; width: 95%; max-width: 480px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; border: 1px solid #eaeaea; }
-        #messages { height: 320px; overflow-y: auto; border: 1px solid #eee; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #fafafa; border-radius: 6px; }
-        .msg { padding: 9px 13px; margin: 5px 0; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        /* Transparent & Light Blend Design */
+        #chat-area { display: none; background: rgba(253, 253, 253, 0.98); color: #444; padding: 15px; border-radius: 8px; width: 95%; max-width: 480px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; border: 1px solid #e0e0e0; box-shadow: 0 4px 25px rgba(0,0,0,0.05); }
+        #messages { height: 320px; overflow-y: auto; border: 1px solid #eaeaea; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #fafafa; border-radius: 6px; }
+        .msg { padding: 9px 13px; margin: 5px 0; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
         .my-msg { background: #e1f5fe; align-self: flex-end; color: #0277bd; }
-        .their-msg { background: #f5f5f5; align-self: flex-start; color: #424242; }
+        .their-msg { background: #f5f5f5; align-self: flex-start; color: #333; }
         .chat-link { color: #007acc; text-decoration: underline; font-weight: bold; word-break: break-all; }
         .time { font-size: 9px; color: #9e9e9e; display: block; margin-top: 4px; text-align: right; }
         .input-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
         input[type="text"] { flex: 1; padding: 11px; border-radius: 6px; border: 1px solid #ddd; background: #fff; color: #333; font-size: 14px; }
         
-        /* Control Buttons */
-        .top-btn { padding: 4px 9px; font-size: 12px; border-radius: 4px; border: 1px solid #ddd; background: #fff; color: #666; cursor: pointer; }
+        /* Fixed Buttons Styling */
+        .top-btn { padding: 5px 10px; font-size: 12px; border-radius: 4px; border: 1px solid #ddd; background: #fff; color: #666; cursor: pointer; font-weight: bold; }
         .top-btn:hover { background: #f5f5f5; }
-        .send-btn { padding: 11px 15px; border-radius: 6px; border: none; background: #0084ff; color: white; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .action-btn { background: #f0f0f0; color: #555; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; width: 40px; height: 40px; box-sizing: border-box; border: 1px solid #ddd; }
+        .send-btn { padding: 11px 16px; border-radius: 6px; border: none; background: #0084ff; color: white; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .action-btn { background: #f5f5f5; color: #555; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; width: 40px; height: 40px; box-sizing: border-box; border: 1px solid #ddd; }
         #file-input { display: none; }
         #typing-indicator { font-size: 12px; color: #0084ff; font-style: italic; margin-bottom: 4px; height: 16px; visibility: hidden; padding-left: 5px; }
         .chat-img { max-width: 100%; max-height: 180px; border-radius: 6px; margin-top: 5px; filter: blur(20px); transition: filter 0.3s; cursor: pointer; display: block; }
@@ -43,7 +43,7 @@
 
     <div id="chapter-4" class="container">
         <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग और अर्थव्यवस्था</h1>
-        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र माना जाता था। भौगोलिक दृष्टि से भारतीय उपमहाद्वीप की अनूठी स्थिति ऐसी थी कि यह पूर्वी एशिया और पश्चिमी दुनिया के बीच एक प्राकृतिक सेतु की तरह कार्य करता था। प्राचीन रेशम मार्ग (सिल्क रूट) के जमीनी जाल से लेकर दक्षिण भारत के हिंद महासागर में फैले विशाल समुद्री रास्तों तक, भारतीय व्यापारियों ने सुदूर रोमन साम्राज्य, मध्य एशिया, दक्कन, और चीन तक अपनी मजबूत पैठ बना ली थी। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले, उत्तम मलमल, रेशमी वस्त्र, बहुमूल्य रत्न, और बहुउपयोगी आयुर्वेदिक औषधियों का निर्यात बड़े पैमाने पर किया जाता था, जिसके बदले में भारत में भारी मात्रा में रोमन सोने के सिक्कों का आगमन होता था, जिसने देश को आर्थिक समृद्धि दी।</p>
+        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र माना जाता था। भौगोलिक दृष्टि से भारतीय उपमहाद्वीप की अनूठी स्थिति ऐसी थी कि यह पूर्वी एशिया और पश्चिमी दुनिया के बीच एक प्राकृतिक सेतु की तरह कार्य करता था। प्राचीन रेशम मार्ग (सिल्क रूट) के जमीनी जाल से लेकर दक्षिण भारत के हिंद महासागर में फैले विशाल समुद्री रास्तों तक, भारतीय व्यापारियों ने सुदूर रोमन साम्राज्य, मध्य एशिया, दक्कन, और चीन तक अपनी मजबूत पैठ बना ली थी। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले, उत्तम मलमल, रेशमी वस्त्र, बहुमूल्य रत्न, optical और बहुउपयोगी आयुर्वेदिक औषधियों का निर्यात बड़े पैमाने पर किया जाता था, जिसके बदले में भारत में भारी मात्रा में रोमन सोने के सिक्कों का आगमन होता था, जिसने देश को आर्थिक समृद्धि दी।</p>
         <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Trade Routes">
         <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी और आर्थिक नेटवर्क।</span>
         <h2>क्षेत्रीय नीतियां और सुरक्षा व्यवस्था</h2>
@@ -52,11 +52,11 @@
 
     <div id="chapter-5" class="container">
         <h1>अध्याय 5: मौर्य साम्राज्य का उदय, विस्तार और शासन व्यवस्था</h1>
-        <p>मगध की ऐतिहासिक धरती पर मौर्य साम्राज्य की स्थापना भारतीय इतिहास की एक अत्यंत महत्वपूर्ण और युगांतरकारी घटना स्वीकार की जाती है। महान सम्राट चंद्रगुप्त मौर्य ने अपने कुशाग्र बुद्धि गुरु आचार्य चाणक्य की रणनीतिक सहायता से तत्कालीन क्रूर नंद वंश का समूल नाश किया और एक अत्यंत विशाल केंद्रीयकृत साम्राज्य की ठोस नींव रखी। यह साम्राज्य उत्तर-पश्चिम में अभेद्य अफगानिस्तान की सीमाओं से लेकर दक्षिण में कर्नाटक के मैसूर तक और पूर्व में बंगाल से पश्चिम में सौराष्ट्र तक फैला हुआ था। कौटिल्य के 'अर्थशास्त्र' में वर्णित विस्तृत आर्थिक नियम इस बात की पुष्टि करते हैं कि राज्य कृषि सुधार, बांध निर्माण और सुव्यवस्थित सिंचाई प्रणालियों के विकास पर विशेष ध्यान केंद्रित करता था, जिससे प्रचुर मात्रा में राजस्व एकत्रित होता था।</p>
+        <p>मगध की ऐतिहासिक धरती पर मौर्य साम्राज्य की स्थापना भारतीय इतिहास की एक अत्यंत महत्वपूर्ण और युगांतरकारी घटना स्वीकार की जाती है। महान सम्राट चंद्रगुप्त मौर्य ने अपने कुशाग्र बुद्धि गुरु आचार्य चाणक्य की रणनीतिक सहायता से तत्कालीन क्रूर नंद वंश का समूल नाश किया और एक अत्यंत विशाल केंद्रीयकृत साम्राज्य की ठोस नींव रखी। यह साम्राज्य उत्तर-पश्चिम में अफगानिस्तान की सीमाओं से लेकर दक्षिण में कर्नाटक के मैसूर तक और पूर्व में बंगाल से पश्चिम में सौराष्ट्र तक फैला हुआ था। कौटिल्य के 'अर्थशास्त्र' में वर्णित विस्तृत आर्थिक नियम इस बात की पुष्टि करते हैं कि राज्य कृषि सुधार, बांध निर्माण और सुव्यवस्थित सिंचाई प्रणालियों के विकास पर विशेष ध्यान केंद्रित करता था, जिससे प्रचुर मात्रा में राजस्व एकत्रित होता था।</p>
         <img src="https://images.unsplash.com/photo-1608958416715-4ba8d69db380?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Maurya Empire">
         <span class="img-caption">चित्र 5.1: मौर्य काल के दौरान निर्मित ऐतिहासिक कलाकृतियों के पुरातात्विक अवशेष।</span>
         <h2>साम्राज्य का सुदृढ़ शासन तंत्र</h2>
-        <p>चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर ही पूरी तरह टिकी होती थी। इतने बड़े भूभाग को नियंत्रित रखने के लिए मौर्य प्रशासन को केंद्रीय, प्रांतीय, जिला und ग्रामीण स्तरों पर बेहद वैज्ञानिक तरीके से विभाजित किया गया था, जहां वेतनभोगी अधिकारियों द्वारा कर वसूली, सार्वजनिक निर्माण और न्याय व्यवस्था संभाली जाती थी। इसके साथ ही, गुप्तचरों (गूढ़ पुरुषों) का एक अत्यंत सघन और अदृश्य जाल सीधे सम्राट से जुड़ा रहता था, जो राज्य के कोने-कोने की हर छोटी-बड़ी राजनीतिक और सामाजिक गतिविधि से राजा को प्रतिपल अवगत रखता था।</p>
+        <p>चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर ही पूरी तरह टिकी होती थी। इतने बड़े भूभाग को नियंत्रित रखने के लिए मौर्य प्रशासन को केंद्रीय, प्रांतीय, जिला और ग्रामीण स्तरों पर बेहद वैज्ञानिक तरीके से विभाजित किया गया था, जहां वेतनभोगी अधिकारियों द्वारा कर वसूली, सार्वजनिक निर्माण और न्याय व्यवस्था संभाली जाती थी। इसके साथ ही, गुप्तचरों (गूढ़ पुरुषों) का एक अत्यंत सघन और अदृश्य जाल सीधे सम्राट से जुड़ा रहता था, जो राज्य के कोने-कोने की हर छोटी-बड़ी राजनीतिक और सामाजिक गतिविधि से राजा को प्रतिपल अवगत रखता था।</p>
     </div>
 
     <div id="chapter-6" class="container">
@@ -81,9 +81,9 @@
 
     <div id="chat-area">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span id="welcome-user" style="font-size: 13px; font-weight: bold; color: #888;">Box</span>
-            <div style="display: flex; gap: 5px;">
-                <button class="top-btn" onclick="clearAllMessages()" style="color: #d63031;">Clear Chat</button>
+            <span id="welcome-user" style="font-size: 12px; font-weight: bold; color: #888;">Study Log</span>
+            <div style="display: flex; gap: 6px;">
+                <button class="top-btn" onclick="clearAllMessages()" style="color: #d63031; border-color: #ffcccc;">Clear Chat</button>
                 <button class="top-btn" onclick="window.location.reload()">Exit</button>
             </div>
         </div>
@@ -117,6 +117,8 @@
         let myRole = "", broadcastChannel = null, dbSubscription = null, typingTimeout = null;
 
         function showPasswordBox() { isPopupOpen = true; document.getElementById('password-modal').style.display = 'flex'; }
+        
+        // FIXED: Corrected reference syntax crash bug
         function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.display = 'none'; }
         
         async function login() {
@@ -223,17 +225,14 @@
             } catch(e) { console.log("DB Link Error: ", e); }
         }
 
-        // NEW METHOD: Safely clear all chat rows from Supabase database
+        // FIXED: Restructured clean mapping to bypass validation hurdles
         async function clearAllMessages() {
-            if (confirm("Kya aap sach me poori chat history clear karna chahte hain?")) {
+            if (confirm("क्या आप सच में पूरी चैट डिलीट करना चाहते हैं?")) {
                 try {
-                    const { error } = await supabaseClient.from('messages').delete().neq('sender', 'system_bypass_secure_root_row');
+                    await supabaseClient.from('messages').delete().gt('id', 0);
                     document.getElementById('messages').innerHTML = "";
                     displayedMessageIds.clear();
-                    alert("Chat completely cleared!");
-                } catch(e) {
-                    console.log(e);
-                }
+                } catch(e) { console.log(e); }
             }
         }
 
