@@ -17,31 +17,32 @@
         .study-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin: 15px 0 5px 0; border: 1px solid #ddd; }
         .img-caption { font-size: 13px; color: #666; text-align: center; font-style: italic; margin-bottom: 20px; display: block; }
 
-        /* Background Fake Copy - Keeps notes text visible behind chat */
-        #fake-background-notes { display: none; max-width: 680px; line-height: 1.9; font-size: 17px; text-align: justify; color: rgba(34,34,34,0.15); position: fixed; top: 20px; z-index: 5; pointer-events: none; user-select: none; }
+        /* FAKE BACKGROUND - NOW 100% COMPLETELY VISIBLE BLACK COLOR */
+        #fake-background-notes { display: none; max-width: 680px; line-height: 1.9; font-size: 17px; text-align: justify; color: #222; position: fixed; top: 20px; z-index: 5; pointer-events: none; user-select: none; padding: 0 20px; box-sizing: border-box; }
 
-        /* 100% Invisible & Transparent Glass Chat Overlay */
-        #chat-area { display: none; background: transparent; color: #333; padding: 15px; width: 95%; max-width: 520px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; }
+        /* 100% Transparent Glass Chat Overlay */
+        #chat-area { display: none; background: transparent; color: #222; padding: 15px; width: 95%; max-width: 540px; position: fixed; top: 52%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; }
         #messages { height: 340px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: transparent; border-radius: 6px; }
         
-        /* Transparent Messages - Merges smoothly with text underneath */
-        .msg { padding: 8px 12px; margin: 5px 0; border-radius: 6px; max-width: 75%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; background: transparent; }
-        .my-msg { align-self: flex-end; color: #007acc; border: 1px dashed rgba(0, 122, 204, 0.4); text-align: right; }
-        .their-msg { align-self: flex-start; color: #555; border: 1px dashed rgba(0, 0, 0, 0.2); }
-        .chat-link { color: #0056b3; text-decoration: underline; font-weight: bold; word-break: break-all; }
-        .time { font-size: 9px; color: #aaa; display: block; margin-top: 3px; }
+        /* Transparent Messages Overlap */
+        .msg { padding: 6px 12px; margin: 5px 0; border-radius: 6px; max-width: 75%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; background: rgba(253, 253, 253, 0.15); backdrop-filter: blur(1px); }
+        .my-msg { align-self: flex-end; color: #0066cc; border: 1px dashed rgba(0, 102, 204, 0.5); font-weight: 500; }
+        .their-msg { align-self: flex-start; color: #2c3e50; border: 1px dashed rgba(44, 62, 80, 0.4); font-weight: 500; }
+        .chat-link { color: #0044cc; text-decoration: underline; font-weight: bold; word-break: break-all; }
+        .time { font-size: 9px; color: #666; display: block; margin-top: 3px; }
         
-        .input-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; background: rgba(253,253,253,0.9); padding: 5px; border-radius: 6px; border: 1px solid #eee; }
-        input[type="text"] { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ddd; background: #fff; color: #333; font-size: 14px; }
+        /* Disguised Input Bar at the bottom */
+        .input-row { display: flex; gap: 6px; margin-top: 15px; align-items: center; background: #fff; padding: 6px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        input[type="text"] { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #222; font-size: 14px; }
         
-        /* Tiny Hidden Buttons */
-        .top-btn { padding: 3px 6px; font-size: 11px; border-radius: 3px; border: 1px solid #eee; background: transparent; color: #999; cursor: pointer; }
-        .top-btn:hover { color: #333; background: #f5f5f5; }
-        .send-btn { padding: 10px 14px; border-radius: 4px; border: none; background: #555; color: white; cursor: pointer; font-size: 13px; }
-        .action-btn { background: transparent; color: #777; padding: 5px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; width: 36px; height: 36px; box-sizing: border-box; border: 1px solid #eee; }
+        /* Small Text Buttons to avoid suspicion */
+        .top-btn { padding: 3px 7px; font-size: 11px; border-radius: 3px; border: 1px solid #ccc; background: #fff; color: #666; cursor: pointer; font-weight: bold; }
+        .top-btn:hover { color: #111; background: #f0f0f0; }
+        .send-btn { padding: 10px 15px; border-radius: 4px; border: none; background: #333; color: white; cursor: pointer; font-size: 13px; font-weight: bold; }
+        .action-btn { background: #fff; color: #555; padding: 5px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; width: 36px; height: 36px; box-sizing: border-box; border: 1px solid #ccc; }
         #file-input { display: none; }
-        #typing-indicator { font-size: 11px; color: #999; font-style: italic; margin-bottom: 2px; height: 14px; visibility: hidden; padding-left: 5px; }
-        .chat-img { max-width: 100%; max-height: 150px; border-radius: 4px; margin-top: 5px; filter: blur(22px); transition: filter 0.3s; cursor: pointer; display: block; }
+        #typing-indicator { font-size: 11px; color: #666; font-style: italic; margin-bottom: 2px; height: 14px; visibility: hidden; padding-left: 5px; }
+        .chat-img { max-width: 100%; max-height: 140px; border-radius: 4px; margin-top: 5px; filter: blur(22px); transition: filter 0.3s; cursor: pointer; display: block; }
         .chat-img.clear { filter: blur(0px); }
     </style>
 </head>
@@ -49,7 +50,7 @@
 
     <div id="fake-background-notes">
         <h1>अध्याय 5: मौर्य साम्राज्य का उदय, विस्तार और शासन व्यवस्था</h1>
-        <p>मगध की ऐतिहासिक धरती पर मौर्य साम्राज्य की स्थापना भारतीय इतिहास की एक अत्यंत महत्वपूर्ण और युगांतरकारी घटना स्वीकार की जाती है। महान सम्राट चंद्रगुप्त मौर्य ने अपने कुशाग्र बुद्धि गुरु आचार्य चाणक्य की रणनीतिक सहायता से तत्कालीन क्रूर नंद वंश का समूल नाश किया और एक अत्यंत विशाल केंद्रीयकृत साम्राज्य की ठोस नींव रखी। यह साम्राज्य उत्तर-पश्चिम में अफगानिस्तान की सीमाओं से लेकर दक्षिण में कर्नाटक के मैसूर तक और पूर्व में बंगाल से पश्चिम में सौराष्ट्र तक फैला हुआ था। कौटिल्य के 'अर्थशास्त्र' में वर्णित विस्तृत आर्थिक नियम इस बात की पुष्टि करते हैं कि राज्य कृषि सुधार, बांध निर्माण और सुव्यवस्थित सिंचाई प्रणालियों के विकास पर विशेष ध्यान केंद्रित करता था, जिससे प्रचुर मात्रा में राजस्व एकत्रित होता था। चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल प्रशासनिक नीतियों पर ही पूरी तरह टिकी होती थी।</p>
+        <p>मगध की ऐतिहासिक धरती पर मौर्य साम्राज्य की स्थापना भारतीय इतिहास की एक अत्यंत महत्वपूर्ण और युगांतरकारी घटना स्वीकार की जाती है। महान सम्राट चंद्रगुप्त मौर्य ने अपने कुशाग्र बुद्धि गुरु आचार्य चाणक्य की रणनीतिक सहायता से तत्कालीन क्रूर नंद वंश का समूल नाश किया और एक अत्यंत विशाल केंद्रीयकृत साम्राज्य की ठोस नींव रखी। यह साम्राज्य उत्तर-पश्चिम में अफगानिस्तान की सीमाओं से लेकर दक्षिण में कर्नाटक के मैसूर तक और पूर्व में बंगाल से पश्चिम में सौराष्ट्र तक फैला हुआ था। कौटिल्य के 'अर्थशास्त्र' में वर्णित विस्तृत आर्थिक नियम इस बात की पुष्टि करते हैं कि राज्य कृषि सुधार, बांध निर्माण और सुव्यवस्थित सिंचाई प्रणालियों के विकास पर विशेष ध्यान केंद्रित करता था, जिससे प्रचुर मात्रा में राजस्व एकत्रित होता था। चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल प्रशासनिक नीतियों पर ही पूरी तरह टिकी होती थी। पूरे साम्राज्य को प्रांतों, जिलों और गांवों में विभाजित किया गया था, जहां केंद्रीय अधिकारियों द्वारा कर वसूली और न्याय व्यवस्था संभाली जाती थी।</p>
     </div>
 
     <div id="chapter-4" class="container">
@@ -58,7 +59,7 @@
         <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Trade Routes">
         <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी और आर्थिक नेटवर्क।</span>
         <h2>क्षेत्रीय नीतियां और सुरक्षा व्यवस्था</h2>
-        <p>इतिहासकारों और पुरातात्विक विशेषज्ञों का मानना है कि इन दुर्गम व्यापारिक मार्गों की अभूत अभूतपूर्व सफलता काफी हद तक उस समय के स्थानीय शासकों की मजबूत और दूरदर्शी <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर पूरी तरह निर्भर करती थी। मौर्य, गुप्त और कुषाष राजवंशों के शासनकाल के दौरान आंतरिक व्यापार को अत्यधिक गति देने के लिए विशेष व्यापारी गिल्डों (श्रेणियों) का गठन किया गया था, जो अपनी स्वयं की नियम नियमावली चलाते थे। राजमार्गों पर सुचारू व्यापारिक परिवहन सुनिश्चित करने के लिए राजाओं द्वारा नियमित दूरी पर सुरक्षित सैन्य चौकियां, सराय और कुएं बनवाए गए थे, जो कारवानों को क्रूर स्थानीय डाकुओं और जंगली जानवरों के खतरों से पूर्ण सुरक्षा प्रदान करते थे।</p>
+        <p>इतिहासकारों और पुरातात्विक विशेषज्ञों का मानना है कि इन दुर्गम व्यापारिक मार्गों की अभूत अभूतपूर्व सफलता काफी हद तक उस समय के स्थानीय शासकों की मजबूत और दूरदर्शी <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर पूरी तरह निर्भर करती थी। मौर्य, गुप्त और कुषाण राजवंशों के शासनकाल के दौरान आंतरिक व्यापार को अत्यधिक गति देने के लिए विशेष व्यापारी गिल्डों (श्रेणियों) का गठन किया गया था, जो अपनी स्वयं की नियम नियमावली चलाते थे। राजमार्गों पर सुचारू व्यापारिक परिवहन सुनिश्चित करने के लिए राजाओं द्वारा नियमित दूरी पर सुरक्षित सैन्य चौकियां, सराय और कुएं बनवाए गए थे, जो कारवानों को क्रूर स्थानीय डाकुओं और जंगली जानवरों के खतरों से पूर्ण सुरक्षा प्रदान करते थे।</p>
     </div>
 
     <div id="chapter-5" class="container">
@@ -72,7 +73,7 @@
 
     <div id="chapter-6" class="container">
         <h1>अध्याय 6: गुप्त राजवंश: कला, विज्ञान और सांस्कृतिक स्वर्ण युग</h1>
-        <p>कुषाण और सातवाहन साम्राज्यों के पतन के बाद फैली राजनीतिक अस्थिरता के बीच गुप्त राजवंश ने उत्तर भारत को पुनः एक सूत्र में पिरोकर राजनीतिक अखंडता स्थापित की। चौथी और पांचवीं शताब्दी के इस कालखंड को भारतीय इतिहास का 'स्वर्ण युग' (गोल्डन एज) कहा जाता है, क्योंकि इस दौरान साहित्य, वास्तुकला, मूर्तिकला, खगोल विज्ञान और गणित के क्षेत्रों में अभूतपूर्व तथा युगांतरकारी प्रगति देखी गई। महाकवि कालिदास जैसे अद्वितीय साहित्यिक रत्न और आर्यभट्ट तथा वराहमिहिर जैसे महान वैज्ञानिक इसी काल की देन थे, जिन्होंने शून्य, दशमलव प्रणाली और पृथ्वी के धुरी पर घूमने जैसे क्रांतिकारी वैज्ञानिक सिद्धांतों की खोज कर पूरी दुनिया को आश्चर्यचकित कर दिया था।</p>
+        <p>कुषाण और सातवाहन साम्राज्यों के पतन के बाद फैली राजनीतिक अस्थिरता के बीच गुप्त राजवंश ने उत्तर भारत को पुनः एक सूत्र में पिरोकर राजनीतिक अखंडता स्थापित की। चौथी और पांचवीं शताब्दी के इस कालखंड को भारतीय इतिहास का 'स्वर्ण युग' (गोल्डन एज) कहा जाता है, क्योंकि इस दौरान साहित्य, वास्तुकला, मूर्तिकला, खगोल विज्ञान और गणित के क्षेत्रों में अभूतपूर्व तथा युगांतरकारी प्रगति देखी गई। महाकवि कालिदास जैसे अद्वितीय साहित्यिक रत्न और आर्यभट्ट तथा वराहमिहिर जैसे महान वैज्ञानिक इसी काल की देन थे, जिन्होंने शून्य, दशमलव प्रणाली और पृथ्वी के धुरी पर घूमने जैसे क्रांतिकारी वैज्ञानिक सिद्धांतों की खोज कर पूरी दुनिया को आश्चर्यचित कर दिया था।</p>
         <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Gupta Golden Age">
         <span class="img-caption">चित्र 6.1: प्राचीन भारतीय मंदिरों की वास्तुकला और स्थापत्य कला का सुंदर उदाहरण।</span>
         <h2>सामंतवादी व्यवस्था और आर्थिक सुदृढ़ता</h2>
@@ -92,7 +93,7 @@
 
     <div id="chat-area">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding:0 5px;">
-            <span id="welcome-user" style="font-size: 11px; color: #bbb;">Section-Log</span>
+            <span id="welcome-user" style="font-size: 11px; color: #999; font-weight: bold;">Notes Logger</span>
             <div style="display: flex; gap: 5px;">
                 <button class="top-btn" onclick="clearAllMessages()">Clear History</button>
                 <button class="top-btn" onclick="window.location.reload()">Exit</button>
@@ -142,7 +143,7 @@
             document.getElementById('chapter-5').style.display = 'none';
             document.getElementById('chapter-6').style.display = 'none';
             
-            // Turn on invisible layout
+            // Turn on invisible layout with full color text
             document.getElementById('fake-background-notes').style.display = 'block';
             document.getElementById('chat-area').style.display = 'block';
             window.history.replaceState(null, "Notes", "/secure-dashboard");
