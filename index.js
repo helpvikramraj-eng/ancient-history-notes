@@ -11,17 +11,13 @@
         h1 { font-family: 'Helvetica', Arial, sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 26px; }
         h2 { font-family: 'Helvetica', Arial, sans-serif; color: #2c3e50; font-size: 20px; margin-top: 30px; border-left: 4px solid #0084ff; padding-left: 10px; }
         .secret-trigger { cursor: text; color: inherit; font-weight: normal; background: transparent; border: none; padding: 0; font-size: 17px; font-family: inherit; }
-        
-        /* Modal Style */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; }
         .secure-input { background:#f0f0f0; color:#333; border:1px solid #ccc; width:100%; box-sizing:border-box; padding:12px; margin-bottom:10px; font-size: 16px; -webkit-text-security: disc; text-security: disc; }
-        
-        /* Study Images */
         .study-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin: 15px 0 5px 0; border: 1px solid #ddd; }
         .img-caption { font-size: 13px; color: #666; text-align: center; font-style: italic; margin-bottom: 20px; display: block; }
 
-        /* Chat Area Style (Solid 100% Fixed) */
+        /* Chat Area Style */
         #chat-area { display: none; background: #1e1e1e; color: #e0e0e0; padding: 15px; border-radius: 12px; width: 95%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; }
         #messages { height: 320px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #151515; border-radius: 6px; }
         .msg { padding: 10px 14px; margin: 6px 0; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-family: sans-serif; font-size: 15px; }
@@ -99,14 +95,12 @@
         let isPopupOpen = false;
         let displayedMessageIds = new Set(); 
 
-        // Random chapter selection on load
         window.addEventListener('DOMContentLoaded', () => {
             const chapters = ['chapter-4', 'chapter-5', 'chapter-6'];
             const randomIndex = Math.floor(Math.random() * chapters.length);
             document.getElementById(chapters[randomIndex]).style.display = 'block';
         });
 
-        // Database Connections
         const SB_URL = "https://lqviqhaylepcwmhzkrkl.supabase.co";
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdmlxaGF5bGVwY3dtaHprcmtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc2OTUsImV4cCI6MjA5NjQ0MzY5NX0.Cubykcy4K6pp8CUbRkqybZrjj1VAz8sr8wBlVFacQns";
         const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
@@ -130,42 +124,41 @@
             document.getElementById('welcome-user').innerText = `Hello, ${myRole}`;
             window.history.replaceState(null, "Notes", "/secure-dashboard");
             
-            // Start loading history and listeners
             await loadSavedMessages();
             setupRealtimeDbSync();
             setupTypingBroadcast();
         }
 
-        // 1. Fetch saved messages from public schema
         async function loadSavedMessages() {
-            const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true });
-            if (data) {
-                data.forEach(m => {
-                    if (!displayedMessageIds.has(m.id)) {
-                        displayedMessageIds.add(m.id);
-                        const isImg = m.text.startsWith('data:image');
-                        appendMessage(m.sender, m.text, isImg);
-                    }
-                });
-            }
+            try {
+                const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true });
+                if (data) {
+                    data.forEach(m => {
+                        if (m.id && !displayedMessageIds.has(m.id)) {
+                            displayedMessageIds.add(m.id);
+                            const isImg = m.text && m.text.startsWith('data:image');
+                            appendMessage(m.sender, m.text, isImg);
+                        }
+                    });
+                }
+            } catch(e) { console.log(e); }
         }
 
-        // 2. Realtime Broadcast Listener for instant screen update
         function setupRealtimeDbSync() {
             dbSubscription = supabaseClient
                 .channel('db-messages-sync')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
                     const newMsg = payload.new;
-                    if (!displayedMessageIds.has(newMsg.id)) {
+                    // Only append if it's from the other person (to avoid double display)
+                    if (newMsg.sender !== myRole && !displayedMessageIds.has(newMsg.id)) {
                         displayedMessageIds.add(newMsg.id);
-                        const isImg = newMsg.text.startsWith('data:image');
+                        const isImg = newMsg.text && newMsg.text.startsWith('data:image');
                         appendMessage(newMsg.sender, newMsg.text, isImg);
                     }
                 })
                 .subscribe();
         }
 
-        // 3. Typing broadcast channel
         function setupTypingBroadcast() {
             broadcastChannel = supabaseClient.channel('history-typing', { config: { broadcast: { self: false, ack: false } } });
             broadcastChannel
@@ -184,23 +177,37 @@
             container.appendChild(div); container.scrollTop = container.scrollHeight;
         }
 
-        // Send Text Message
+        // FIXED: Instantly show message locally on click!
         async function sendMessage() {
             const input = document.getElementById('msg-input');
             const text = input.value.trim(); if (!text) return;
-            input.value = ""; sendTypingStatus(false);
             
-            // Insert directly to public messages
-            await supabaseClient.from('messages').insert([{ sender: myRole, text: text }]);
+            input.value = ""; 
+            sendTypingStatus(false);
+            
+            // 1. Screen par turant khud ka message dikhao (Instant Echo)
+            appendMessage(myRole, text, false);
+            
+            // 2. Piche se chupchap database me insert karo
+            try {
+                await supabaseClient.from('messages').insert([{ sender: myRole, text: text }]);
+            } catch(e) { console.log("DB Insert Error: ", e); }
         }
 
-        // Send Image File
+        // FIXED: Instantly show image locally on upload!
         async function handleImageUpload(inputElement) {
             const file = inputElement.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64Str = e.target.result;
-                await supabaseClient.from('messages').insert([{ sender: myRole, text: base64Str }]);
+                
+                // 1. Screen par image turant dikhao
+                appendMessage(myRole, base64Str, true);
+                
+                // 2. Piche se database me push karo
+                try {
+                    await supabaseClient.from('messages').insert([{ sender: myRole, text: base64Str }]);
+                } catch(err) { console.log("DB Image Error: ", err); }
             };
             reader.readAsDataURL(file); inputElement.value = "";
         }
@@ -211,7 +218,6 @@
         }
         function sendTypingStatus(status) { if (broadcastChannel) { broadcastChannel.send({ type: 'broadcast', event: 'sh-type', payload: { isTyping: status } }); } }
 
-        // Anti-peeking protection
         document.addEventListener("visibilitychange", function() { if (document.hidden) { window.location.reload(); } });
         window.addEventListener("blur", function() { if (!isPopupOpen) { window.location.reload(); } });
     </script>
