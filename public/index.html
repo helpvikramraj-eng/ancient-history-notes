@@ -4,65 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>कक्षा 9 इतिहास - डिजिटल अध्ययन नोट्स</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Noto Serif Devanagari', 'Georgia', serif; background: #fdfdfd; color: #222; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { max-width: 650px; line-height: 1.9; font-size: 17px; margin-top: 4px; text-align: justify; }
-        h1 { font-family: 'Helvetica', Arial, sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 24px; }
-        h2 { font-family: 'Helvetica', Arial, sans-serif; color: #444; font-size: 19px; margin-top: 25px; }
+        .container { max-width: 680px; line-height: 1.9; font-size: 17px; margin-top: 4px; text-align: justify; padding-bottom: 60px; }
+        h1 { font-family: 'Helvetica', Arial, sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 26px; }
+        h2 { font-family: 'Helvetica', Arial, sans-serif; color: #2c3e50; font-size: 20px; margin-top: 30px; border-left: 4px solid #0084ff; padding-left: 10px; }
         .secret-trigger { cursor: text; color: inherit; font-weight: normal; background: transparent; border: none; padding: 0; font-size: 17px; font-family: inherit; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
         .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; }
-        #chat-area { display: none; background: #1e1e1e; color: #e0e0e0; padding: 20px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: none; box-sizing: border-box; font-size: 16px; }
-        input { background: #2d2d2d; color: white; }
-        button { background: #0084ff; color: white; cursor: pointer; font-weight: bold; }
-        .btn-danger { background: #d63031; }
-        #messages { height: 300px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #151515; border-radius: 6px; }
-        .msg { padding: 10px 14px; margin: 6px 0; border-radius: 8px; max-width: 75%; word-wrap: break-word; }
+        
+        /* Study Page Images (For Realism) */
+        .study-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin: 15px 0 5px 0; border: 1px solid #ddd; }
+        .img-caption { font-size: 13px; color: #666; text-align: center; font-style: italic; margin-bottom: 20px; display: block; }
+
+        /* Chat Area Style */
+        #chat-area { display: none; background: #1e1e1e; color: #e0e0e0; padding: 15px; border-radius: 12px; width: 95%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; }
+        #messages { height: 320px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #151515; border-radius: 6px; }
+        .msg { padding: 10px 14px; margin: 6px 0; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-family: sans-serif; font-size: 15px; }
         .my-msg { background: #0084ff; align-self: flex-end; color: white; }
         .their-msg { background: #2d2d2d; align-self: flex-start; color: white; }
-        .time { font-size: 10px; color: #aaa; display: block; margin-top: 4px; }
-        .chat-img { max-width: 100%; border-radius: 6px; margin-top: 5px; filter: blur(15px); transition: filter 0.3s; cursor: pointer; }
+        .time { font-size: 10px; color: #aaa; display: block; margin-top: 4px; text-align: right; }
+        
+        /* Layout Controls */
+        .input-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
+        input[type="text"] { flex: 1; padding: 12px; border-radius: 6px; border: none; background: #2d2d2d; color: white; font-size: 15px; }
+        button { padding: 12px 16px; border-radius: 6px; border: none; background: #0084ff; color: white; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .btn-danger { background: #d63031; }
+        
+        /* Gallery Button Custom */
+        .file-label { background: #2d2d2d; color: #e0e0e0; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; width: 44px; height: 44px; box-sizing: border-box; }
+        #file-input { display: none; }
+        
+        /* Typing & Images */
+        #typing-indicator { font-size: 13px; color: #0084ff; font-style: italic; margin-bottom: 5px; height: 18px; visibility: hidden; padding-left: 5px; }
+        .chat-img { max-width: 100%; max-height: 180px; border-radius: 6px; margin-top: 5px; filter: blur(20px); transition: filter 0.3s; cursor: pointer; display: block; }
         .chat-img.clear { filter: blur(0px); }
     </style>
 </head>
 <body>
     <div id="study-page" class="container">
-        <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग और अर्थव्यवस्था</h1>
+        <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग, अर्थव्यवस्था और वैश्विक संबंध</h1>
         
-        <p>भारतीय उपमहाद्वीप का आर्थिक इतिहास अत्यंत समृद्ध और जटिल रहा है। प्राचीन काल में भारत केवल कृषि प्रधान देश नहीं था, बल्कि वैश्विक व्यापार का एक प्रमुख केंद्र था। भौगोलिक दृष्टि से भारत की स्थिति ऐसी थी कि यह पूर्व और पश्चिम के बीच एक सेतु का कार्य करता था। सिल्क रूट (रेशम मार्ग) और समुद्री मार्गों के माध्यम से भारतीय व्यापारी सुदूर रोमन साम्राज्य, मध्य एशिया, दक्षिण-पूर्व एशिया और चीन तक अपनी पैठ बना चुके थे। इन मार्गों से मुख्य रूप से भारतीय मसाले (विशेषकर काली मिर्च), मलमल के कपड़े, रेशम, कीमती रत्न, इत्र और औषधियों का निर्यात किया जाता था, जिसके बदले में भारत में भारी मात्रा में सोने और चांदी का आगमन होता था।</p>
+        <p>भारतीय उपमहाद्वीप का आर्थिक इतिहास अत्यंत समृद्ध, विविध और व्यापक रहा है। प्राचीन काल में भारत केवल एक कृषि प्रधान समाज नहीं था, जैसा कि सामान्यतः समझा जाता है, बल्कि यह वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र था। भौगोलिक दृष्टि से भारत की प्रायद्वीपीय स्थिति ऐसी थी कि यह पूर्व और पश्चिम के बीच एक प्राकृतिक व्यापारिक सेतु का कार्य करता था। उत्तर में हिमालय की दुर्गम घाटियों को पार करने वाले सिल्क मार्ग (रेशम मार्ग) और दक्षिण में हिंद महासागर के विशाल समुद्री रास्तों के माध्यम से भारतीय व्यापारी सुदूर रोमन साम्राज्य, यूनान, मिस्र, मध्य एशिया, चीन और संपूर्ण दक्षिण-पूर्व एशिया तक अपनी मजबूत पैठ बना चुके थे। इन व्यापारिक मार्गों से मुख्य रूप से भारतीय गर्म मसाले (विशेषकर काली मिर्च, जिसे रोम में 'काला सोना' कहा जाता था), महीन मलमल के कपड़े, जरी के वस्त्र, नील, चंदन की लकड़ी, कीमती रत्न और आयुर्वेदिक औषधियों का भारी मात्रा में निर्यात किया जाता था। इस निरंतर निर्यात के बदले में भारत में दुनिया भर से सोने, चांदी और अन्य मूल्यवान धातुओं का भारी आगमन होता था, जिसने भारत को आर्थिक रूप से संपन्न बनाया।</p>
         
-        <h2>क्षेत्रीय नीतियां और व्यापारिक सुरक्षा</h2>
-        <p>इतिहासकारों का मानना है कि इन व्यापारिक मार्गों की सफलता और निरंतरता काफी हद तक उस समय के शासकों की मजबूत <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर निर्भर करती थी। उदाहरण के लिए, मौर्य और गुप्त राजवंशों के दौरान आंतरिक व्यापार को बढ़ावा देने के लिए विशेष नियम बनाए गए थे। विभिन्न राज्यों के बीच तालमेल बिठाने और व्यापारियों से अत्यधिक कर (टैक्स) न वसूलने के सख्त निर्देश थे। राजमार्गो पर सुरक्षा सुनिश्चित करने के लिए नियमित अंतराल पर सैन्य चौकियां और विश्राम गृह (सरायों) का निर्माण किया गया था, ताकि लुटेरों और स्थानीय डकैतों से कारवानों की रक्षा की जा सके। सिक्कों के मानकीकरण ने भी इस आर्थिक प्रगति में एक महत्वपूर्ण भूमिका निभाई थी।</p>
+        <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Ancient Silk Route Map">
+        <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी नेटवर्क, जो भारत को मध्य एशिया से जोड़ता था।</span>
 
-        <h2>समुद्री व्यापार और सांस्कृतिक आदान-प्रदान</h2>
-        <p>भूमि मार्ग के अलावा, भारत का समुद्री व्यापार भी चरम पर था। चोल और सातवाहन राजाओं के काल में भारतीय जहाजों ने बंगाल की खाड़ी और अरब सागर पर अपना वर्चस्व स्थापित किया था। भड़ौच (भृगुकच्छ), ताम्रलिप्ति और मुज़िरिस जैसे प्राचीन बंदरगाह दिन-रात वैश्विक व्यापारियों से गुलजार रहते थे। इस व्यापार ने न केवल आर्थिक समृद्धि को जन्म दिया, बल्कि भारतीय संस्कृति, धर्म (बौद्ध और हिंदू धर्म) और भाषा का प्रसार भी पूरे दक्षिण-पूर्व एशिया में किया, जिसके अवशेष आज भी कंबोडिया के अंकोरवाट और इंडोनेशिया के बोरोबुदुर मंदिरों में साफ़ देखे जा सकते हैं।</p>
+        <h2>क्षेत्रीय नीतियां, व्यापारिक गिल्ड और सुरक्षा व्यवस्था</h2>
+        <p>इतिहासकारों का गहन विश्लेषण यह दर्शाता है कि इन अंतरमहाद्वीपीय व्यापारिक मार्गों की अभूतपूर्व सफलता और सातत्य काफी हद तक उस समय के शक्तिशाली राजवंशों की दूरदर्शी और मजबूत <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर पूरी तरह निर्भर करती थी। मौर्य, कुषाण, सातवाहन और बाद में गुप्त राजवंशों के दौरान आंतरिक और बाह्य व्यापार को गति देने के लिए राज्य स्तर पर विशेष नियमों और संस्थाओं का गठन किया गया था। व्यापारियों के संगठनों, जिन्हें 'श्रेणी' या 'गिल्ड' कहा जाता था, को अपने आंतरिक नियम बनाने और स्वायत्त रूप से काम करने की पूर्ण स्वतंत्रता थी। विभिन्न राज्यों के बीच व्यापारिक सुगमता सुनिश्चित करने के लिए चुंगी और व्यापार कर को तर्कसंगत बनाया गया था ताकि व्यापारियों का शोषण न हो। सबसे महत्वपूर्ण बात यह थी कि राष्ट्रीय राजमार्गों और प्रमुख नदी मार्गों पर सुरक्षा व्यवस्था को चाक-चौबंद रखने के लिए राजाओं द्वारा नियमित दूरी पर सैन्य चौकियां (सुरक्षा चौकियां) और विश्राम गृहों का एक व्यापक जाल बिछाया गया था। यह व्यवस्था कारवानों को स्थानीय डाकुओं, लुटेरों और जंगली जानवरों के खतरों से सुरक्षा प्रदान करती थी, जिससे वाणिज्य बिना किसी बाधा के फलता-फूलता रहा।</p>
+
+        <img src="https://images.unsplash.com/photo-1608958416715-4ba8d69db380?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Ancient Indian Coins">
+        <span class="img-caption">चित्र 4.2: गुप्त साम्राज्य के दौरान जारी किए गए सोने के सिक्के (दीनार), जो आर्थिक समृद्धि को दर्शाते हैं।</span>
+
+        <h2>विदेशी यात्रियों के विवरण और आर्थिक स्वर्ण युग</h2>
+        <p>भारत की इस आर्थिक संपन्नता और सुदृढ़ व्यापारिक ढांचे का सजीव वर्णन तत्कालीन विदेशी यात्रियों और विद्वानों के यात्रा वृत्तांतों में प्रचुरता से मिलता है। यूनानी इतिहासकार प्लिनी ने अपनी पुस्तकों में इस बात पर गहरी चिंता व्यक्त की थी कि रोमन साम्राज्य का पूरा सोना भारतीय विलासिता की वस्तुओं, विशेषकर मलमल और मसालों को खरीदने में बहता जा रहा है। चीनी यात्री फाहियान और ह्वेनसांग, जो बौद्ध ग्रंथों के अध्ययन के लिए भारत आए थे, ने भी अपने विवरणों में गुप्त और वर्धन साम्राज्यों के समृद्ध शहरों, बाजारों और बिना किसी डर के यात्रा करने वाले व्यापारियों का उल्लेख किया है। इस काल में सिक्कों के मानकीकरण, विशेष रूप से शुद्ध सोने और चांदी के सिक्कों के बड़े पैमाने पर प्रचलन ने न केवल घरेलू लेन-देन को आसान बनाया, बल्कि अंतरराष्ट्रीय बाजारों में भारतीय मुद्रा की साख को भी स्थापित किया। यही कारण है कि इतिहासकारों द्वारा इस पूरे कालखंड को प्राचीन भारतीय अर्थव्यवस्था का 'स्वर्ण युग' कहा जाता है।</p>
+
+        <h2>समुद्री वाणिज्य और वृहत्तर भारत का निर्माण</h2>
+        <p>स्थल मार्गों के समांतर ही भारत का समुद्री वाणिज्य भी अपने चरमोत्कर्ष पर था। भारत के पूर्वी और पश्चिमी तटों पर स्थित बंदरगाह जैसे कि भृगुकच्छ (भड़ौच), ताम्रलिप्ति, मुज़िरिस और कावेरीपट्टनम वर्ष के बारह महीने विदेशी जहाजों और व्यापारियों से गुलजार रहते थे। चोल, पाण्ड्य और सातवाहन राजाओं ने शक्तिशाली नौसेनाओं का विकास किया था, जिसने बंगाल की खाड़ी और अरब सागर के समुद्री व्यापारिक मार्गों पर भारतीय नियंत्रण को सुरक्षित रखा। इस समुद्री व्यापार का परिणाम केवल आर्थिक लाभ तक सीमित नहीं था; इसने एक गहरे सांस्कृतिक आदान-प्रदान को जन्म दिया। भारतीय नाविकों और बौद्ध भिक्षुओं के माध्यम से भारतीय दर्शन, कला, स्थापत्य, धर्म (हिंदू और बौद्ध धर्म) और संस्कृत भाषा का प्रसार पूरे श्रीलंका, म्यांमार, थाईलैंड, कंबोडिया, वियतनाम और इंडोनेशिया में हुआ।</p>
+        
+        <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Ancient Temple Architecture">
+        <span class="img-caption">चित्र 4.3: दक्षिण-पूर्व एशिया में भारतीय व्यापारिक प्रभाव के प्रतीक प्राचीन कंबोडियाई मंदिरों की वास्तुकला।</span>
+
+        <h2>उत्खनन और पुरातात्विक साक्ष्य</h2>
+        <p>आधुनिक समय में किए गए विभिन्न पुरातात्विक उत्खननों ने इन ऐतिहासिक विवरणों की सत्यता पर अंतिम मुहर लगा दी है। दक्षिण भारत में अरीकामेडु जैसे स्थानों की खुदाई से भारी मात्रा में रोमन एम्फोरा (मिट्टी के बर्तन), वाइन के जार और रोमन सम्राटों के सोने के सिक्के मिले हैं, जो यह साबित करते हैं कि ईसा की शुरुआती सदियों में भारत और रोम के बीच सीधा समुद्री संपर्क कितना सघन था। इसी प्रकार, गंगा घाटी और तटीय क्षेत्रों से प्राप्त टेराकोटा की मुहरें और गिल्डों के अभिलेख उस समय के सुसंगठित बैंकिंग और ऋण तंत्र की गवाही देते हैं। इन पुख्ता सबूतों से स्पष्ट है कि प्राचीन भारत का व्यापारिक नेटवर्क तत्कालीन ज्ञात विश्व की सबसे बड़ी आर्थिक ताकतों में से एक था, जिसने वैश्विक सकल घरेलू उत्पाद (GDP) में भारत की हिस्सेदारी को लगभग एक-तिहाई बनाए रखा था।</p>
     </div>
 
     <div id="password-modal" class="modal">
         <div class="modal-box">
             <h3 style="margin-top:0; color:#333;">अध्ययन क्रेडेंशियल की पुष्टि करें</h3>
             <p style="font-size: 13px; color: #666; margin-bottom: 15px;">आगे बढ़ने के लिए सुरक्षा कुंजी दर्ज करें।</p>
-            <input type="password" id="pass-input" style="background:#f0f0f0; color:#333; border:1px solid #ccc;" placeholder="Security Key दर्ज करें...">
-            <button onclick="login()">पुष्टि करें (Verify)</button>
-            <button class="btn-danger" style="background:#aaa;" onclick="hidePasswordBox()">रद्द करें</button>
-            <p id="err" style="color: red; font-size:14px;"></p>
+            <input type="password" id="pass-input" style="background:#f0f0f0; color:#333; border:1px solid #ccc; width:100%; box-sizing:border-box; padding:12px; margin-bottom:10px;" placeholder="Security Key दर्ज करें...">
+            <button style="width:100%; margin-bottom:5px;" onclick="login()">पुष्टि करें (Verify)</button>
+            <button class="btn-danger" style="width:100%; background:#aaa;" onclick="hidePasswordBox()">रद्द करें</button>
+            <p id="err" style="color: red; font-size:14px; margin-top:5px;"></p>
         </div>
     </div>
 
     <div id="chat-area">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <h3 id="welcome-user" style="margin:0;">Secret Box</h3>
-            <button class="btn-danger" style="width: auto; padding: 5px 10px; margin: 0;" onclick="clearChat()">Burn All</button>
+            <button class="btn-danger" style="padding: 5px 10px; font-size: 13px;" onclick="window.location.reload()">Exit Chat</button>
         </div>
+        <div id="typing-indicator">Typing...</div>
         <div id="messages"></div>
-        <input type="text" id="msg-input" placeholder="Write a note...">
-        <input type="text" id="img-input" placeholder="Paste Image URL here (Optional)..." style="font-size: 13px;">
-        <button onclick="sendMessage()">Leave Message / Photo</button>
+        
+        <div class="input-row">
+            <label class="file-label" title="Gallery Se Photo Bheinjen">
+                📷
+                <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(this)">
+            </label>
+            <input type="text" id="msg-input" placeholder="Write a note..." oninput="handleTyping()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
 
     <script>
-        let secretCode = ""; let myRole = ""; 
+        const SB_URL = "https://lqviqhaylepcwmhzkrkl.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdmlxaGF5bGVwY3dtaHprcmtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc2OTUsImV4cCI6MjA5NjQ0MzY5NX0.Cubykcy4K6pp8CUbRkqybZrjj1VAz8sr8wBlVFacQns";
+        
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        let myRole = ""; 
+        let channel = null;
+        let typingTimeout = null;
+
         const PASSWORD_BOYFRIEND = "Rani";
         const PASSWORD_GIRLFRIEND = "History";
 
@@ -74,11 +119,9 @@
         
         function login() {
             const pin = document.getElementById('pass-input').value;
-            if (pin === PASSWORD_BOYFRIEND) {
-                myRole = "Boyfriend"; secretCode = pin;
-            } else if (pin === PASSWORD_GIRLFRIEND) {
-                myRole = "Girlfriend"; secretCode = pin;
-            } else {
+            if (pin === PASSWORD_BOYFRIEND) { myRole = "Vikram"; } 
+            else if (pin === PASSWORD_GIRLFRIEND) { myRole = "Her"; } 
+            else {
                 document.getElementById('err').innerText = "Invalid Key!";
                 return;
             }
@@ -86,61 +129,104 @@
             hidePasswordBox();
             document.getElementById('study-page').style.display = 'none';
             document.getElementById('chat-area').style.display = 'block';
-            document.getElementById('welcome-user').innerText = `Hello, ${myRole === 'Boyfriend' ? 'Vikram' : 'Her'}`;
+            document.getElementById('welcome-user').innerText = `Hello, ${myRole}`;
             window.history.replaceState(null, "Notes", "/secure-dashboard");
-            loadMessages();
-            setInterval(loadMessages, 3000); // Har 3 second me naye message check honge
+            
+            setupRealtime();
         }
 
-        function getLocalChats() {
-            let chats = localStorage.getItem('secret_chats');
-            return chats ? JSON.parse(chats) : [];
-        }
-
-        function loadMessages() {
-            const msgs = getLocalChats();
-            const container = document.getElementById('messages'); container.innerHTML = "";
-            msgs.forEach(m => {
-                let div = document.createElement('div');
-                div.className = m.sender === myRole ? "msg my-msg" : "msg their-msg";
-                let content = m.text;
-                if(m.text.startsWith('http://') || m.text.startsWith('https://')) {
-                    content = `<img src="${m.text}" class="chat-img" onclick="toggleBlur(this)" alt="Secret Photo"/><br/><small style="font-size:10px;color:#eee;">(Tap to view/blur)</small>`;
-                }
-                let senderName = m.sender === 'Boyfriend' ? 'Vikram' : 'Her';
-                div.innerHTML = `${content} <span class="time">${m.timestamp} (${senderName})</span>`;
-                container.appendChild(div);
+        function setupRealtime() {
+            channel = supabaseClient.channel('history-room', {
+                config: { broadcast: { self: false, ack: false } }
             });
+
+            channel
+            .on('broadcast', { event: 'sh-msg' }, (payload) => {
+                appendMessage(payload.payload.sender, payload.payload.text, payload.payload.isImg);
+            })
+            .on('broadcast', { event: 'sh-type' }, (payload) => {
+                const indicator = document.getElementById('typing-indicator');
+                if (payload.payload.isTyping) {
+                    indicator.style.visibility = 'visible';
+                } else {
+                    indicator.style.visibility = 'hidden';
+                }
+            })
+            .subscribe();
+        }
+
+        function appendMessage(sender, text, isImg) {
+            const container = document.getElementById('messages');
+            let div = document.createElement('div');
+            div.className = sender === myRole ? "msg my-msg" : "msg their-msg";
+            
+            let content = text;
+            if (isImg) {
+                content = `<img src="${text}" class="chat-img" onclick="this.classList.toggle('clear')" alt="Secret Photo"/><br/><small style="font-size:10px; opacity:0.7;">(Tap to view/blur)</small>`;
+            }
+            
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            div.innerHTML = `${content} <span class="time">${time} (${sender})</span>`;
+            container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
 
         function sendMessage() {
-            const textInput = document.getElementById('msg-input'); const imgInput = document.getElementById('img-input');
-            let finalPayload = textInput.value.trim();
-            if(imgInput.value.trim() !== "") { finalPayload = imgInput.value.trim(); }
-            if(!finalPayload) return;
-            
-            const msgs = getLocalChats();
-            msgs.push({
-                sender: myRole, text: finalPayload,
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim();
+            if (!text || !channel) return;
+
+            channel.send({
+                type: 'broadcast',
+                event: 'sh-msg',
+                payload: { sender: myRole, text: text, isImg: false }
             });
-            localStorage.setItem('secret_chats', JSON.stringify(msgs));
-            textInput.value = ""; imgInput.value = ""; loadMessages();
+
+            appendMessage(myRole, text, false);
+            input.value = "";
+            sendTypingStatus(false);
         }
 
-        function toggleBlur(imgElement) { imgElement.classList.toggle('clear'); }
-        function clearChat() {
-            if(confirm("Saare messages hamesha ke liye delete karein?")) {
-                localStorage.removeItem('secret_chats'); loadMessages();
+        function handleImageUpload(inputElement) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Str = e.target.result;
+                if (channel) {
+                    channel.send({
+                        type: 'broadcast',
+                        event: 'sh-msg',
+                        payload: { sender: myRole, text: base64Str, isImg: true }
+                    });
+                    appendMessage(myRole, base64Str, true);
+                }
+            };
+            reader.readAsDataURL(file);
+            inputElement.value = "";
+        }
+
+        function handleTyping() {
+            sendTypingStatus(true);
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                sendTypingStatus(false);
+            }, 1800);
+        }
+
+        function sendTypingStatus(status) {
+            if (channel) {
+                channel.send({
+                    type: 'broadcast',
+                    event: 'sh-type',
+                    payload: { isTyping: status }
+                });
             }
         }
-        document.addEventListener("visibilitychange", function() { if (document.hidden) { autoLock(); } });
-        window.addEventListener("blur", function() { autoLock(); });
-        function autoLock() {
-            secretCode = ""; myRole = "";
-            document.getElementById('chat-area').style.display = 'none'; window.location.reload(); 
-        }
+
+        document.addEventListener("visibilitychange", function() { if (document.hidden) { window.location.reload(); } });
+        window.addEventListener("blur", function() { window.location.reload(); });
     </script>
 </body>
 </html>
