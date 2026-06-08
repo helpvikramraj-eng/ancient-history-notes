@@ -1,65 +1,219 @@
-const express = require('express');
-const fs = require('fs');
-const app = express();
-const http = require('http').createServer(app);
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>कक्षा 9 इतिहास - डिजिटल अध्ययन नोट्स</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Noto Serif Devanagari', 'Georgia', serif; background: #fdfdfd; color: #222; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { max-width: 680px; line-height: 1.9; font-size: 17px; margin-top: 4px; text-align: justify; padding-bottom: 60px; display: none; }
+        h1 { font-family: 'Helvetica', Arial, sans-serif; color: #111; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 26px; }
+        h2 { font-family: 'Helvetica', Arial, sans-serif; color: #2c3e50; font-size: 20px; margin-top: 30px; border-left: 4px solid #0084ff; padding-left: 10px; }
+        .secret-trigger { cursor: text; color: inherit; font-weight: normal; background: transparent; border: none; padding: 0; font-size: 17px; font-family: inherit; }
+        
+        /* Modal Style */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); text-align: center; }
+        .secure-input { background:#f0f0f0; color:#333; border:1px solid #ccc; width:100%; box-sizing:border-box; padding:12px; margin-bottom:10px; font-size: 16px; -webkit-text-security: disc; text-security: disc; }
+        
+        /* Study Images */
+        .study-img { width: 100%; max-height: 250px; object-fit: cover; border-radius: 6px; margin: 15px 0 5px 0; border: 1px solid #ddd; }
+        .img-caption { font-size: 13px; color: #666; text-align: center; font-style: italic; margin-bottom: 20px; display: block; }
 
-app.use(express.json());
-app.use(express.static(__dirname + '/public'));
+        /* Chat Area Style (Solid 100% Fixed) */
+        #chat-area { display: none; background: #1e1e1e; color: #e0e0e0; padding: 15px; border-radius: 12px; width: 95%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; }
+        #messages { height: 320px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: #151515; border-radius: 6px; }
+        .msg { padding: 10px 14px; margin: 6px 0; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-family: sans-serif; font-size: 15px; }
+        .my-msg { background: #0084ff; align-self: flex-end; color: white; }
+        .their-msg { background: #2d2d2d; align-self: flex-start; color: white; }
+        .time { font-size: 10px; color: #aaa; display: block; margin-top: 4px; text-align: right; }
+        .input-row { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
+        input[type="text"] { flex: 1; padding: 12px; border-radius: 6px; border: none; background: #2d2d2d; color: white; font-size: 15px; }
+        button { padding: 12px 16px; border-radius: 6px; border: none; background: #0084ff; color: white; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .btn-danger { background: #d63031; }
+        .file-label { background: #2d2d2d; color: #e0e0e0; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; width: 44px; height: 44px; box-sizing: border-box; }
+        #file-input { display: none; }
+        #typing-indicator { font-size: 13px; color: #0084ff; font-style: italic; margin-bottom: 5px; height: 18px; visibility: hidden; padding-left: 5px; }
+        .chat-img { max-width: 100%; max-height: 180px; border-radius: 6px; margin-top: 5px; filter: blur(20px); transition: filter 0.3s; cursor: pointer; display: block; }
+        .chat-img.clear { filter: blur(0px); }
+    </style>
+</head>
+<body>
 
-// 🔒 PASSWORDS: Aapka 'Rani' aur aapki GF ka 'History'
-const PASSWORD_BOYFRIEND = "Rani";    
-const PASSWORD_GIRLFRIEND = "History"; 
-const MESSAGES_FILE = './messages.json';
+    <div id="chapter-4" class="container">
+        <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग और अर्थव्यवस्था</h1>
+        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र था। भौगोलिक दृष्टि से भारत की स्थिति ऐसी थी कि यह पूर्व और पश्चिम के बीच एक प्राकृतिक व्यापारिक सेतु का कार्य करता था। उत्तर में रेशम मार्ग और दक्षिण में हिंद महासागर के समुद्री रास्तों के माध्यम से भारतीय व्यापारी सुदूर रोमन साम्राज्य, मध्य एशिया और चीन तक अपनी मजबूत पैठ बना चुके थे। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले और आयुर्वेदिक औषधियों का निर्यात किया जाता था।</p>
+        <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Trade Routes">
+        <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी नेटवर्क।</span>
+        <h2>क्षेत्रीय नीतियां और सुरक्षा व्यवस्था</h2>
+        <p>इतिहासकारों का मानना है कि इन व्यापारिक मार्गों की अभूतपूर्व सफलता काफी हद तक उस समय के शासकों की मजबूत <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर पूरी तरह निर्भर करती थी। मौर्य और गुप्त राजवंशों के दौरान आंतरिक व्यापार को गति देने के लिए विशेष गिल्डों का गठन किया गया था। राजमार्गों पर सुरक्षा सुनिश्चित करने के लिए नियमित दूरी पर सैन्य चौकियां बनाई गई थीं, जो कारवानों को स्थानीय डाकुओं और लुटेरों के खतरों से सुरक्षा प्रदान करती थीं।</p>
+    </div>
 
-function getMessages() {
-    if (!fs.existsSync(MESSAGES_FILE)) return [];
-    return JSON.parse(fs.readFileSync(MESSAGES_FILE));
-}
+    <div id="chapter-5" class="container">
+        <h1>अध्याय 5: मौर्य साम्राज्य का उदय, विस्तार और शासन व्यवस्था</h1>
+        <p>मगध की धरती पर मौर्य साम्राज्य की स्थापना भारतीय इतिहास की एक युगांतरकारी घटना थी। चंद्रगुप्त मौर्य ने आचार्य चाणक्य की सहायता से एक विशाल केंद्रीयकृत साम्राज्य की नींव रखी, जो उत्तर-पश्चिम में अफगानिस्तान से लेकर दक्षिण में कर्नाटक तक फैला था। अर्थशास्त्र में वर्णित नियम बताते हैं कि कृषि और सिंचाई के विकास पर राज्य विशेष ध्यान देता था, जिससे प्रचुर राजस्व प्राप्त होता था।</p>
+        <img src="https://images.unsplash.com/photo-1608958416715-4ba8d69db380?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Maurya Empire">
+        <span class="img-caption">चित्र 5.1: मौर्य काल के दौरान निर्मित ऐतिहासिक कलाकृतियों के पुरातात्विक अवशेष।</span>
+        <h2>साम्राज्य का सुदृढ़ शासन तंत्र</h2>
+        <p>चाणक्य के सिद्धांतों के अनुसार साम्राज्य की स्थिरता राजा और उसकी कुशल <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर टिकी होती थी। पूरे साम्राज्य को प्रांतों, जिलों और गांवों में विभाजित किया गया था, जहां केंद्रीय अधिकारियों द्वारा कर वसूली और न्याय व्यवस्था संभाली जाती थी। गुप्तचरों का एक विस्तृत जाल राजा को राज्य की हर गतिविधि से अवगत रखता था।</p>
+    </div>
 
-function saveMessages(msgs) {
-    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(msgs, null, 2));
-}
+    <div id="chapter-6" class="container">
+        <h1>अध्याय 6: गुप्त राजवंश: कला, विज्ञान और सांस्कृतिक स्वर्ण युग</h1>
+        <p>कुषाण साम्राज्य के पतन के बाद गुप्त राजवंश ने उत्तर भारत में राजनीतिक स्थिरता पुनः स्थापित की। इस कालखंड को भारतीय इतिहास का 'स्वर्ण युग' कहा जाता है क्योंकि इस दौरान साहित्य, कला, वास्तुकला और विज्ञान के क्षेत्रों में अभूतपूर्व प्रगति हुई। कालिदास जैसे महान कवि और आर्यभट्ट जैसे महान गणितज्ञ इसी समृद्ध युग की देन थे, जिन्होंने शून्य और दशमलव प्रणाली की खोज की।</p>
+        <img src="https://images.unsplash.com/photo-1599940824399-b87987ceb72a?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Gupta Golden Age">
+        <span class="img-caption">चित्र 6.1: प्राचीन भारतीय मंदिरों की वास्तुकला और मूर्तिकला का सुंदर उदाहरण।</span>
+        <h2>सामंतवादी व्यवस्था और आर्थिक सुदृढ़ता</h2>
+        <p>गुप्त सम्राटों की सफलता का मुख्य आधार उनकी विकेंद्रीकृत और उदार <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों को माना जाता है। इस काल में स्थानीय सामंतों और नगर श्रेष्ठियों को शासन में काफी अधिकार दिए गए थे। शुद्ध सोने के सिक्कों (दीनार) के बड़े पैमाने पर प्रचलन ने व्यापार को अत्यंत सरल बना दिया, जिससे नगरों की आर्थिक स्थिति अत्यधिक मजबूत बनी रही।</p>
+    </div>
 
-app.post('/api/login', (req, res) => {
-    const { password } = req.body;
-    if (password === PASSWORD_BOYFRIEND) {
-        res.json({ success: true, role: "Boyfriend" });
-    } else if (password === PASSWORD_GIRLFRIEND) {
-        res.json({ success: true, role: "Girlfriend" });
-    } else { res.status(401).json({ success: false, message: "Wrong Code!" }); }
-});
+    <div id="password-modal" class="modal">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:#333;">अध्ययन क्रेडेंशियल की पुष्टि करें</h3>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">आगे बढ़ने के लिए सुरक्षा कुंजी दर्ज करें.</p>
+            <input type="text" id="pass-input" class="secure-input" autocomplete="off" name="fake_password" placeholder="Security Key दर्ज करें...">
+            <button style="width:100%; margin-bottom:5px;" onclick="login()">पुष्टि करें (Verify)</button>
+            <button class="btn-danger" style="width:100%; background:#aaa;" onclick="hidePasswordBox()">रद्द करें</button>
+            <p id="err" style="color: red; font-size:14px; margin-top:5px;"></p>
+        </div>
+    </div>
 
-app.post('/api/get-messages', (req, res) => {
-    const { password } = req.body;
-    if (password !== PASSWORD_BOYFRIEND && password !== PASSWORD_GIRLFRIEND) {
-        return res.status(401).send("Unauthorized");
-    }
-    res.json(getMessages());
-});
+    <div id="chat-area">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <h3 id="welcome-user" style="margin:0;">Secret Box</h3>
+            <button class="btn-danger" style="padding: 5px 10px; font-size: 13px;" onclick="window.location.reload()">Exit Chat</button>
+        </div>
+        <div id="typing-indicator">Typing...</div>
+        <div id="messages"></div>
+        <div class="input-row">
+            <label class="file-label" title="Gallery Se Photo Bheinjen">
+                📷 <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(this)">
+            </label>
+            <input type="text" id="msg-input" placeholder="Write a note..." oninput="handleTyping()">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
 
-app.post('/api/send-message', (req, res) => {
-    const { password, text } = req.body;
-    let sender = "";
-    if (password === PASSWORD_BOYFRIEND) sender = "Boyfriend";
-    else if (password === PASSWORD_GIRLFRIEND) sender = "Girlfriend";
-    else return res.status(401).send("Unauthorized");
+    <script>
+        let isPopupOpen = false;
+        let displayedMessageIds = new Set(); 
 
-    if (!text.trim()) return res.json({ success: false });
-    const msgs = getMessages();
-    msgs.push({
-        sender: sender, text: text,
-        timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
-    });
-    saveMessages(msgs);
-    res.json({ success: true });
-});
+        // Random chapter selection on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const chapters = ['chapter-4', 'chapter-5', 'chapter-6'];
+            const randomIndex = Math.floor(Math.random() * chapters.length);
+            document.getElementById(chapters[randomIndex]).style.display = 'block';
+        });
 
-app.post('/api/clear-chat', (req, res) => {
-    const { password } = req.body;
-    if (password !== PASSWORD_BOYFRIEND && password !== PASSWORD_GIRLFRIEND) { return res.status(401).send("Unauthorized"); }
-    saveMessages([]);
-    res.json({ success: true });
-});
+        // Database Connections
+        const SB_URL = "https://lqviqhaylepcwmhzkrkl.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxdmlxaGF5bGVwY3dtaHprcmtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4Njc2OTUsImV4cCI6MjA5NjQ0MzY5NX0.Cubykcy4K6pp8CUbRkqybZrjj1VAz8sr8wBlVFacQns";
+        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        let myRole = "", broadcastChannel = null, dbSubscription = null, typingTimeout = null;
 
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, '0.0.0.0', () => console.log(`Server running`));
+        function showPasswordBox() { isPopupOpen = true; document.getElementById('password-modal').style.display = 'flex'; }
+        function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.display = 'none'; }
+        
+        async function login() {
+            const pin = document.getElementById('pass-input').value;
+            if (pin === "Rani") { myRole = "Vikram"; } 
+            else if (pin === "History") { myRole = "Her"; } 
+            else { document.getElementById('err').innerText = "Invalid Key!"; return; }
+            
+            hidePasswordBox();
+            isPopupOpen = true;
+            document.getElementById('chapter-4').style.display = 'none';
+            document.getElementById('chapter-5').style.display = 'none';
+            document.getElementById('chapter-6').style.display = 'none';
+            document.getElementById('chat-area').style.display = 'block';
+            document.getElementById('welcome-user').innerText = `Hello, ${myRole}`;
+            window.history.replaceState(null, "Notes", "/secure-dashboard");
+            
+            // Start loading history and listeners
+            await loadSavedMessages();
+            setupRealtimeDbSync();
+            setupTypingBroadcast();
+        }
+
+        // 1. Fetch saved messages from public schema
+        async function loadSavedMessages() {
+            const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true });
+            if (data) {
+                data.forEach(m => {
+                    if (!displayedMessageIds.has(m.id)) {
+                        displayedMessageIds.add(m.id);
+                        const isImg = m.text.startsWith('data:image');
+                        appendMessage(m.sender, m.text, isImg);
+                    }
+                });
+            }
+        }
+
+        // 2. Realtime Broadcast Listener for instant screen update
+        function setupRealtimeDbSync() {
+            dbSubscription = supabaseClient
+                .channel('db-messages-sync')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+                    const newMsg = payload.new;
+                    if (!displayedMessageIds.has(newMsg.id)) {
+                        displayedMessageIds.add(newMsg.id);
+                        const isImg = newMsg.text.startsWith('data:image');
+                        appendMessage(newMsg.sender, newMsg.text, isImg);
+                    }
+                })
+                .subscribe();
+        }
+
+        // 3. Typing broadcast channel
+        function setupTypingBroadcast() {
+            broadcastChannel = supabaseClient.channel('history-typing', { config: { broadcast: { self: false, ack: false } } });
+            broadcastChannel
+            .on('broadcast', { event: 'sh-type' }, (payload) => {
+                document.getElementById('typing-indicator').style.visibility = payload.payload.isTyping ? 'visible' : 'hidden';
+            }).subscribe();
+        }
+
+        function appendMessage(sender, text, isImg) {
+            const container = document.getElementById('messages');
+            let div = document.createElement('div');
+            div.className = sender === myRole ? "msg my-msg" : "msg their-msg";
+            div.innerHTML = isImg ? `<img src="${text}" class="chat-img" onclick="this.classList.toggle('clear')"/><br/><small style="font-size:10px;opacity:0.7;">(Tap to view/blur)</small>` : text;
+            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            div.innerHTML += ` <span class="time">${time} (${sender})</span>`;
+            container.appendChild(div); container.scrollTop = container.scrollHeight;
+        }
+
+        // Send Text Message
+        async function sendMessage() {
+            const input = document.getElementById('msg-input');
+            const text = input.value.trim(); if (!text) return;
+            input.value = ""; sendTypingStatus(false);
+            
+            // Insert directly to public messages
+            await supabaseClient.from('messages').insert([{ sender: myRole, text: text }]);
+        }
+
+        // Send Image File
+        async function handleImageUpload(inputElement) {
+            const file = inputElement.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Str = e.target.result;
+                await supabaseClient.from('messages').insert([{ sender: myRole, text: base64Str }]);
+            };
+            reader.readAsDataURL(file); inputElement.value = "";
+        }
+
+        function handleTyping() {
+            sendTypingStatus(true); clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => { sendTypingStatus(false); }, 1800);
+        }
+        function sendTypingStatus(status) { if (broadcastChannel) { broadcastChannel.send({ type: 'broadcast', event: 'sh-type', payload: { isTyping: status } }); } }
+
+        // Anti-peeking protection
+        document.addEventListener("visibilitychange", function() { if (document.hidden) { window.location.reload(); } });
+        window.addEventListener("blur", function() { if (!isPopupOpen) { window.location.reload(); } });
+    </script>
+</body>
+</html>
