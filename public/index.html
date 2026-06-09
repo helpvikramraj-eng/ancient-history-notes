@@ -102,7 +102,7 @@
         <div id="typing-indicator">Typing...</div>
         <div id="messages"></div>
         <div class="input-row">
-            <label class="action-btn" title="Image">
+            <label class="action-btn" title="Image" onclick="isSelectingFile = true;">
                 📷 <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(this)">
             </label>
             
@@ -114,6 +114,7 @@
     <script>
         let isPopupOpen = false;
         let displayedMessageIds = new Set(); 
+        let isSelectingFile = false; // Flag to prevent anti-spy flash clear on gallery load
 
         window.addEventListener('DOMContentLoaded', () => {
             const chapters = ['chapter-4', 'chapter-5', 'chapter-6'];
@@ -131,8 +132,8 @@
         function showPasswordBox() { isPopupOpen = true; document.getElementById('password-modal').style.display = 'flex'; }
         function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.display = 'none'; }
         
-        // FIXED FORCIBLE ROOT REDIRECT TO BYPASS VERCEL 404 DEPLOYMENT HOOK
         function triggerCleanExit() {
+            if (isSelectingFile) return; // Prevent closing if just picking a gallery item
             window.location.href = window.location.origin;
         }
 
@@ -250,7 +251,12 @@
         }
 
         async function handleImageUpload(inputElement) {
-            const file = inputElement.files[0]; if (!file) return;
+            const file = inputElement.files[0]; 
+            if (!file) { 
+                isSelectingFile = false; // Reset if cancelled
+                return; 
+            }
+            
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64Str = e.target.result;
@@ -259,6 +265,9 @@
                 try {
                     await supabaseClient.from('messages').insert([{ sender: myRole, text: base64Str }]);
                 } catch(err) { console.log("DB Image Error: ", err); }
+                finally {
+                    isSelectingFile = false; // Re-enable anti-spy guard safely after upload complete
+                }
             };
             reader.readAsDataURL(file); inputElement.value = "";
         }
@@ -269,8 +278,13 @@
         }
         function sendTypingStatus(status) { if (broadcastChannel) { broadcastChannel.send({ type: 'broadcast', event: 'sh-type', payload: { isTyping: status } }); } }
 
-        document.addEventListener("visibilitychange", function() { if (document.hidden) { triggerCleanExit(); } });
-        window.addEventListener("blur", function() { triggerCleanExit(); });
+        // ANTI-SPY DISGUISE INTERCEPTOR WITH GALLERY SELECTION LOCK BYPASS
+        document.addEventListener("visibilitychange", function() { 
+            if (document.hidden && !isSelectingFile) { triggerCleanExit(); } 
+        });
+        window.addEventListener("blur", function() { 
+            if (!isSelectingFile) { triggerCleanExit(); } 
+        });
     </script>
 </body>
 </html>
