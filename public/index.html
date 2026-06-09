@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>कक्षा 9 इतिहास - डिजिटल अध्ययन नोट्स</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -20,29 +20,32 @@
         /* FAKE BACKGROUND NOTES - ALWAYS 100% VISIBLE ORIGINAL BLACK */
         #fake-background-notes { display: none; max-width: 680px; line-height: 1.9; font-size: 17px; text-align: justify; color: #222 !important; position: fixed; top: 20px; z-index: 5; pointer-events: none; user-select: none; padding: 0 20px; box-sizing: border-box; filter: none !important; -webkit-filter: none !important; }
 
-        /* Transparent Chat Layer Overlay */
-        #chat-area { display: none; background: transparent; color: #222; padding: 15px; width: 95%; max-width: 540px; position: fixed; top: 52%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; filter: none !important; }
-        #messages { height: 340px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: transparent; border-radius: 6px; }
+        /* FIXED RESPONSIVE SCREEN WIDTH FOR MOBILE & LAPTOP */
+        #chat-area { display: none; background: transparent; color: #222; padding: 10px; width: calc(100% - 30px); max-width: 540px; position: fixed; top: 52%; left: 50%; transform: translate(-50%, -50%); z-index: 100; box-sizing: border-box; filter: none !important; }
+        #messages { height: 340px; overflow-y: auto; padding: 10px; margin-bottom: 10px; display: flex; flex-direction: column; background: transparent; border-radius: 6px; box-sizing: border-box; }
         
-        .msg { padding: 6px 12px; margin: 5px 0; border-radius: 6px; max-width: 75%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; background: rgba(253, 253, 253, 0.2); }
+        .msg { padding: 6px 12px; margin: 5px 0; border-radius: 6px; max-width: 75%; word-wrap: break-word; font-family: sans-serif; font-size: 14px; background: rgba(253, 253, 253, 0.2); box-sizing: border-box; }
         .my-msg { align-self: flex-end; color: #0066cc; border: 1px dashed rgba(0, 102, 204, 0.5); font-weight: bold; }
         .their-msg { align-self: flex-start; color: #2c3e50; border: 1px dashed rgba(44, 62, 80, 0.4); font-weight: bold; }
         .chat-link { color: #0044cc; text-decoration: underline; font-weight: bold; word-break: break-all; }
         .time { font-size: 9px; color: #666; display: block; margin-top: 3px; }
         
-        .input-row { display: flex; gap: 6px; margin-top: 15px; align-items: center; background: #fff; padding: 6px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        input[type="text"] { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #222; font-size: 14px; }
+        /* BOTTOM INPUT ROW WITH SYSTEM BOX-SIZING FIX */
+        .input-row { display: flex; gap: 6px; margin-top: 15px; align-items: center; background: #fff; padding: 6px; border-radius: 6px; border: 1px solid #ddd; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
+        input[type="text"] { flex: 1; min-width: 0; padding: 10px; border-radius: 4px; border: 1px solid #ccc; background: #fff; color: #222; font-size: 14px; box-sizing: border-box; }
         
         .top-btn { padding: 3px 7px; font-size: 11px; border-radius: 3px; border: 1px solid #ccc; background: #fff; color: #666; cursor: pointer; font-weight: bold; }
         .top-btn:hover { color: #111; background: #f0f0f0; }
-        .send-btn { padding: 10px 15px; border-radius: 4px; border: none; background: #333; color: white; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .action-btn { background: #fff; color: #555; padding: 5px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; width: 36px; height: 36px; box-sizing: border-box; border: 1px solid #ccc; }
+        
+        /* FIXED SEND BUTTON - NO WIDTH OVERLAP */
+        .send-btn { padding: 10px 16px; border-radius: 4px; border: none; background: #333; color: white; cursor: pointer; font-size: 13px; font-weight: bold; white-space: nowrap; flex-shrink: 0; box-sizing: border-box; }
+        .action-btn { background: #fff; color: #555; padding: 5px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; width: 36px; height: 36px; box-sizing: border-box; border: 1px solid #ccc; flex-shrink: 0; }
         #file-input { display: none; }
         #typing-indicator { font-size: 11px; color: #666; font-style: italic; margin-bottom: 2px; height: 14px; visibility: hidden; padding-left: 5px; }
         
-        /* FIXED: SECURE BLUR BY DEFAULT + ANIMATED ZOOM ON TOGGLE CLICK */
-        .chat-img { max-width: 100%; max-height: 140px; border-radius: 4px; margin-top: 5px; cursor: pointer; display: block; transition: transform 0.2s, max-height 0.2s, filter 0.2s; position: relative; z-index: 10; filter: blur(22px); }
-        .chat-img.zoomed { filter: blur(0px) !important; max-height: 380px !important; max-width: 95vw !important; transform: scale(1.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 99999; background: #fff; padding: 2px; }
+        /* RESPONSIVE DISPLAY FIT IMAGE WITH PINCH TO ZOOM SUPPORT */
+        .chat-img { max-width: 100%; max-height: 140px; border-radius: 4px; margin-top: 5px; cursor: pointer; display: block; filter: blur(22px); transition: filter 0.2s; position: relative; z-index: 10; }
+        .chat-img.zoomed { filter: blur(0px) !important; max-height: 70vh !important; max-width: 100% !important; width: auto; object-fit: contain; margin: 10px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.15); background: #fff; padding: 4px; z-index: 9999; transform: none !important; }
     </style>
 </head>
 <body>
@@ -54,7 +57,7 @@
 
     <div id="chapter-4" class="container">
         <h1>अध्याय 4: प्राचीन भारतीय व्यापारिक मार्ग और अर्थव्यवस्था</h1>
-        <p>प्राचीन काल में भारत वैश्विक वाणिज्य und औद्योगिक निर्माण का एक बहुत बड़ा केंद्र माना जाता था। भौगोलिक दृष्टि से भारतीय उपमहाद्वीप की अनूठी स्थिति ऐसी थी कि यह पूर्वी एशिया और पश्चिमी दुनिया के बीच एक प्राकृतिक सेतु की तरह कार्य करता था। प्राचीन रेशम मार्ग (सिल्क रूट) के जमीनी जाल से लेकर दक्षिण भारत के हिंद महासागर में फैले विशाल समुद्री रास्तों तक, भारतीय व्यापारियों ने सुदूर रोमन साम्राज्य, मध्य एशिया, दक्कन, और चीन तक अपनी मजबूत पैठ बना ली थी। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले, उत्तम मलमल, रेशमी वस्त्र, बहुमूल्य रत्न, और बहुउपयोगी आयुर्वेदिक औषधियों का निर्यात बड़े पैमाने पर किया जाता था, जिसके बदले में भारत में भारी मात्रा में रोमन सोने के सिक्कों का आगमन होता था, जिसने देश को आर्थिक समृद्धि दी।</p>
+        <p>प्राचीन काल में भारत वैश्विक वाणिज्य और औद्योगिक निर्माण का एक बहुत बड़ा केंद्र माना जाता था। भौगोलिक दृष्टि से भारतीय उपमहाद्वीप की अनूठी स्थिति ऐसी थी कि यह पूर्वी एशिया और पश्चिमी दुनिया के बीच एक प्राकृतिक सेतु की तरह कार्य करता था। प्राचीन रेशम मार्ग (सिल्क रूट) के जमीनी जाल से लेकर दक्षिण भारत के हिंद महासागर में फैले विशाल समुद्री रास्तों तक, भारतीय व्यापारियों ने सुदूर रोमन साम्राज्य, मध्य एशिया, दक्कन, और चीन तक अपनी मजबूत पैठ बना ली थी। इन मार्गों से मुख्य रूप से भारतीय गर्म मसाले, उत्तम मलमल, रेशमी वस्त्र, बहुमूल्य रत्न, और बहुउपयोगी आयुर्वेदिक औषधियों का निर्यात बड़े पैमाने पर किया जाता था, जिसके बदले में भारत में भारी मात्रा में रोमन सोने के सिक्कों का आगमन होता था, जिसने देश को आर्थिक समृद्धि दी।</p>
         <img src="https://images.unsplash.com/photo-1585121689284-9284752c0032?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Trade Routes">
         <span class="img-caption">चित्र 4.1: प्राचीन सिल्क मार्ग (रेशम मार्ग) का मुख्य जमीनी और आर्थिक नेटवर्क।</span>
         <h2>क्षेत्रीय नीतियां और सुरक्षा व्यवस्था</h2>
@@ -95,7 +98,7 @@
             <span id="welcome-user" style="font-size: 11px; color: #999; font-weight: bold;">Notes Logger</span>
             <div style="display: flex; gap: 5px;">
                 <button class="top-btn" onclick="clearAllMessages()">Clear History</button>
-                <button class="top-btn" onclick="window.location.reload()">Exit</button>
+                <button class="top-btn" onclick="window.location.href=window.location.origin+window.location.pathname">Exit</button>
             </div>
         </div>
         <div id="typing-indicator">Typing...</div>
@@ -104,7 +107,6 @@
             <label class="action-btn" title="Image">
                 📷 <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(this)">
             </label>
-            <div class="action-btn" title="Link" onclick="sendLinkPrompt()">🔗</div>
             
             <input type="text" id="msg-input" placeholder="अध्ययन नोट लिखें..." oninput="handleTyping()">
             <button class="send-btn" onclick="sendMessage()">Send</button>
@@ -188,6 +190,7 @@
             }).subscribe();
         }
 
+        // WHATSAPP STYLE AUTO LINK REGEX DETECTOR
         function linkify(text) {
             const urlPattern = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
             return text.replace(urlPattern, '<a href="$1" target="_blank" class="chat-link">$1</a>');
@@ -198,7 +201,6 @@
             let div = document.createElement('div');
             div.className = sender === myRole ? "msg my-msg" : "msg their-msg";
             
-            // FIXED COMBINATION: IMAGE STAYS BLURRY, CLICK REMOVES BLUR AND ZOOMS IN AT THE SAME TIME
             if (isImg) {
                 div.innerHTML = `<img src="${text}" class="chat-img" onclick="this.classList.toggle('zoomed')"/><br/><small style="font-size:9px;opacity:0.5;">(Tap to Zoom)</small>`;
             } else {
@@ -223,20 +225,7 @@
             } catch(e) { console.log("DB Insert Error: ", e); }
         }
 
-        async function sendLinkPrompt() {
-            const url = prompt("Link paste karein:");
-            if (!url || !url.trim()) return;
-            let finalUrl = url.trim();
-            if (!/^https?:\/\//i.test(finalUrl)) {
-                finalUrl = 'https://' + finalUrl;
-            }
-            appendMessage(myRole, finalUrl, false);
-            try {
-                await supabaseClient.from('messages').insert([{ sender: myRole, text: finalUrl }]);
-            } catch(e) { console.log("DB Link Error: ", e); }
-        }
-
-        // PERFECTED: NO CONFIRM POPUP WARNING ANYMORE
+        // NO POPUP INSTANT DELETE FUNCTION
         async function clearAllMessages() {
             try {
                 await supabaseClient.from('messages').delete().gt('id', 0);
