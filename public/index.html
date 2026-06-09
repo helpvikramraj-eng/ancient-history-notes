@@ -41,7 +41,7 @@
         #file-input { display: none; }
         #typing-indicator { font-size: 11px; color: #666; font-style: italic; margin-bottom: 2px; height: 14px; visibility: hidden; padding-left: 5px; }
         
-        /* PHOTO BLUR AND LIVE PINCH RESPONSIVE ZOOM RULES */
+        /* PHOTO BLUR AND PINCH RESPONSIVE ZOOM RULES */
         .chat-img { max-width: 100%; max-height: 140px; border-radius: 4px; margin-top: 5px; cursor: pointer; display: block; filter: blur(22px); transition: filter 0.2s; position: relative; z-index: 10; }
         .chat-img.zoomed { filter: blur(0px) !important; max-height: 70vh !important; max-width: 100% !important; width: auto; object-fit: contain; margin: 10px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.15); background: #fff; padding: 4px; z-index: 9999; transform: none !important; }
     </style>
@@ -68,7 +68,7 @@
         <img src="https://images.unsplash.com/photo-1608958416715-4ba8d69db380?auto=format&fit=crop&w=600&q=80" class="study-img" alt="Maurya Empire">
         <span class="img-caption">चित्र 5.1: मौर्य काल के दौरान निर्मित ऐतिहासिक कलाकृतियों के पुरातात्विक अवशेष।</span>
         <h2>साम्राज्य का सुदृढ़ शासन तंत्र</h2>
-        <p>चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर ही पूरी तरह टिकी होती थी। इतने बड़े भूभाग को नियंत्रित रखने के लिए मौर्य प्रशासन को केंद्रीय, प्रांतीय, जिला और ग्रामीण स्तरों पर बेहद वैज्ञानिक तरीके से विभाजित किया गया था, जहां वेतनभोरी अधिकारियों द्वारा कर वसूली, सार्वजनिक निर्माण और न्याय व्यवस्था संभाली जाती थी। इसके साथ ही, गुप्तचरों (गूढ़ पुरुषों) का एक अत्यंत सघन और अदृश्य जाल सीधे सम्राट से जुड़ा रहता था, जो राज्य के कोने-कोने की हर छोटी-बड़ी राजनीतिक और सामाजिक गतिविधि से राजा को प्रतिपल अवगत रखता था।</p>
+        <p>चाणक्य के सप्तांग सिद्धांतों के अनुसार किसी भी विशाल साम्राज्य की दीर्घकालिक स्थिरता केवल राजा की व्यक्तिगत क्षमता और उसकी कुशल <span class="secret-trigger" onclick="showPasswordBox()">प्रशासनिक</span> नीतियों पर ही पूरी तरह टिकी होती थी। इतने बड़े भूभाग को नियंत्रित रखने के लिए मौर्य प्रशासन को केंद्रीय, प्रांतीय, जिला और ग्रामीण स्तरों पर बेहद वैज्ञानिक तरीके से विभाजित किया गया था, जहां वेतनभोगी अधिकारियों द्वारा कर वसूली, सार्वजनिक निर्माण और न्याय व्यवस्था संभाली जाती थी। इसके साथ ही, गुप्तचरों (गूढ़ पुरुषों) का एक अत्यंत सघन और अदृश्य जाल सीधे सम्राट से जुड़ा रहता था, जो राज्य के कोने-कोने की हर छोटी-बड़ी राजनीतिक और सामाजिक गतिविधि से राजा को प्रतिपल अवगत रखता था।</p>
     </div>
 
     <div id="chapter-6" class="container">
@@ -106,7 +106,7 @@
                 📷 <input type="file" id="file-input" accept="image/*" onchange="handleImageUpload(this)">
             </label>
             
-            <input type="text" id="msg-input" placeholder="अध्ययन नोट लिखें..." oninput="handleTyping()">
+            <input type="text" id="msg-input" placeholder="अध्ययन नोट लिखें..." oninput="handleTyping()" onkeydown="if(event.key==='Enter') sendMessage()">
             <button class="send-btn" onclick="sendMessage()">Send</button>
         </div>
     </div>
@@ -131,18 +131,17 @@
         function showPasswordBox() { isPopupOpen = true; document.getElementById('password-modal').style.display = 'flex'; }
         function hidePasswordBox() { isPopupOpen = false; document.getElementById('password-modal').style.display = 'none'; }
         
+        // FIXED FORCIBLE ROOT REDIRECT TO BYPASS VERCEL 404 DEPLOYMENT HOOK
         function triggerCleanExit() {
-            window.location.href = window.location.origin + window.location.pathname;
+            window.location.href = window.location.origin;
         }
 
-        // HEAVY ANTI-3-FINGER SWIPE & MULTI-TOUCH DETECTOR SYSTEM
         function setupMultiTouchAntiSpy() {
             const targets = [window, document, document.body];
             targets.forEach(t => {
                 t.addEventListener('touchstart', (e) => {
                     if (document.getElementById('chat-area').style.display === 'block') {
                         if (e.touches && e.touches.length >= 2) {
-                            // Instant vanishing trick before screenshot action completes
                             triggerCleanExit();
                         }
                     }
@@ -240,19 +239,6 @@
             try {
                 await supabaseClient.from('messages').insert([{ sender: myRole, text: text }]);
             } catch(e) { console.log("DB Insert Error: ", e); }
-        }
-
-        async function sendLinkPrompt() {
-            const url = prompt("Link paste karein:");
-            if (!url || !url.trim()) return;
-            let finalUrl = url.trim();
-            if (!/^https?:\/\//i.test(finalUrl)) {
-                finalUrl = 'https://' + finalUrl;
-            }
-            appendMessage(myRole, finalUrl, false);
-            try {
-                await supabaseClient.from('messages').insert([{ sender: myRole, text: finalUrl }]);
-            } catch(e) { console.log("DB Link Error: ", e); }
         }
 
         async function clearAllMessages() {
